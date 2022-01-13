@@ -10,13 +10,13 @@ public class CustomerResource  {
 	// mvn compile quarkus:dev
 	
     // Should offer the following:
-    // register
-    // deregister
-    // getTokens
-    // getReport
+    // 	/customer
+	// 	/customer/register
+    // 	/customer/deregister
+    // 	/customer/getTokens
+    // 	/customer/getReport
 	
-//	private static TokenService service = new TokenService(new LocalTokenRepository());
-
+	//	private static TokenService service = new TokenService(new LocalTokenRepository());
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String hello() {
@@ -27,10 +27,8 @@ public class CustomerResource  {
 	@Path("{customerId}/{numberOfTokens}")
 	@Produces(MediaType.APPLICATION_JSON)    
 	public Response getTokens(@PathParam("customerId") String customerId, @PathParam("numberOfTokens") Integer numberOfTokens) {
-//		return Response.status(Response.Status.CREATED).entity(service.createTokens(numberOfTokens,customerId)).build();
-		return Response.status(Response.Status.CREATED)
-				.entity(String.format("Hello %s! Here are %2d tokens!", customerId, numberOfTokens))
-				.build();
+	// return Response.status(Response.Status.CREATED).entity(service.createTokens(numberOfTokens,customerId)).build();
+		return Response.status(Response.Status.CREATED).entity(String.format("Hello %s! Here are %2d tokens!", customerId, numberOfTokens)).build();
 	}
 
 //	@POST

@@ -12,7 +12,10 @@ import restService.Presentation.Resources.CustomerMessageService;
 
 public class VerifyCustomerSteps {
 
-	
+	private MessageQueue messageQueue = mock(MessageQueue.class);
+	// private TokenService tokenService = new TokenService(new LocalTokenRepository());
+	private CustomerMessageService service = new CustomerMessageService(messageQueue);//, tokenService);
+
 	
 	@Given("the endpoint is {string}")
 	public void theEndpointIs(String string) {
@@ -34,12 +37,6 @@ public class VerifyCustomerSteps {
 	
 	// String customerId = null;
 	// String token = null;
-	//
-	// private MessageQueue messageQueue = mock(MessageQueue.class);
-	// private TokenService tokenService = new TokenService(new
-	// LocalTokenRepository());
-	// private CustomerMessageService service = new
-	// CustomerMessageService(messageQueue, tokenService);
 
 	// @Given("A customer with id {string}")
 	// public void aCustomerWithId(String customerId) {
