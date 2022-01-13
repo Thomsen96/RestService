@@ -1,6 +1,0 @@
-version: '3'
-services:
-  token-service-server:
-    image: rest-service-server
-    build: .
-
