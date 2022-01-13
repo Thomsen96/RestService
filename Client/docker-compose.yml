@@ -1,0 +1,21 @@
+version: '3'
+services:
+  rabbitMq:
+    image: rabbitmq:3
+    container_name: rabbitMq
+    networks:
+      - app-network
+    
+  rest-service-server:
+    container_name: rest-service
+    image: rest-service-server
+    build: .
+    ports:
+      - 8189:8189
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external:
+      name: deploy_app-network
