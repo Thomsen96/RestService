@@ -7,6 +7,8 @@ import javax.ws.rs.core.Response;
 @Path("/customers")
 public class CustomerResource  {
 
+	// mvn compile quarkus:dev
+	
     // Should offer the following:
     // register
     // deregister
@@ -14,6 +16,22 @@ public class CustomerResource  {
     // getReport
 	
 //	private static TokenService service = new TokenService(new LocalTokenRepository());
+
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public String hello() {
+		return "Hello from customer root";
+	}
+	
+	@GET
+	@Path("{customerId}/{numberOfTokens}")
+	@Produces(MediaType.APPLICATION_JSON)    
+	public Response getTokens(@PathParam("customerId") String customerId, @PathParam("numberOfTokens") Integer numberOfTokens) {
+//		return Response.status(Response.Status.CREATED).entity(service.createTokens(numberOfTokens,customerId)).build();
+		return Response.status(Response.Status.CREATED)
+				.entity(String.format("Hello %s! Here are %2d tokens!", customerId, numberOfTokens))
+				.build();
+	}
 
 //	@POST
 //	@Path("{customerId}/{numberOfTokens}")
@@ -35,21 +53,5 @@ public class CustomerResource  {
 //	}
 
 	
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "Hello from customer root";
-    }
-    
-    @GET
-	@Path("{customerId}/{numberOfTokens}")
-    @Produces(MediaType.APPLICATION_JSON)    
-    public Response getTokens(@PathParam("customerId") String customerId, @PathParam("numberOfTokens") Integer numberOfTokens) {
-//		return Response.status(Response.Status.CREATED).entity(service.createTokens(numberOfTokens,customerId)).build();
-    	return Response.status(Response.Status.CREATED)
-    			.entity(String.format("Hello %s! Here are %2d tokens!", customerId, numberOfTokens))
-    			.build();
-
-	}
 
 }
