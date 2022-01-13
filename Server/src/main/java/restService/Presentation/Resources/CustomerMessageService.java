@@ -10,17 +10,21 @@ public class CustomerMessageService {
 	private CompletableFuture<Boolean> customerVerified;
 //	private TokenService tokenService;
 
-	public CustomerMessageService(
-			MessageQueue messageQueue
-//			, TokenService tokenService
-			) {
+	public CustomerMessageService(MessageQueue messageQueue) {
 		this.messageQueue = messageQueue;
 //		this.tokenService = tokenService;
 		this.messageQueue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequested);
 		this.messageQueue.addHandler("CustomerVerified", this::handleCustomerVerification);
 	}
 
-
+    // Should offer the following:
+	//	/customer
+    // 		/register
+    // 		/deregister
+    // 		/getTokens
+    // 		/getReport
+	
+	
 	// Send request?
 	public Boolean verifyCustomer(String customerId) {
 //		customerVerified = new CompletableFuture<>();

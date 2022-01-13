@@ -10,10 +10,11 @@ public class CustomerResource  {
 	// mvn compile quarkus:dev
 	
     // Should offer the following:
-    // register
-    // deregister
-    // getTokens
-    // getReport
+	//	/customer
+    // 		/register
+    // 		/deregister
+    // 		/getTokens
+    // 		/getReport
 	
 //	private static TokenService service = new TokenService(new LocalTokenRepository());
 
