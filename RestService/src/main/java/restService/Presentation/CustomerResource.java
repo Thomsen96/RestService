@@ -1,11 +1,11 @@
-package restService.Presentation.Resources;
+package restService.Presentation;
 
 import messaging.MessageQueue;
-import restService.Resources.TokenService;
+import restService.Infrastructure.CustomerMessageFactory;
+import restService.Infrastructure.CustomerMessageService;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+
 import java.util.concurrent.CompletableFuture;
 
 @Path("/customers")
@@ -16,8 +16,7 @@ public class CustomerResource  {
     // deregister
     // getTokens
     // getReport
-	public MessageQueue mq;
-	CustomerMessageService cms = new CustomerMessageService(mq);
+	CustomerMessageService cms = new CustomerMessageFactory().getService();
 	private CompletableFuture<String> sessionHandled;
 
 	//GET TOKENS IS FOUND IN TOKENRESOURCE OR TOKENSERVICE

@@ -1,4 +1,4 @@
-package restService.Resources;
+package restService.Application;
 
 import messaging.Event;
 import messaging.MessageQueue;

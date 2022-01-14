@@ -8,8 +8,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import messaging.Event;
 import messaging.MessageQueue;
-import restService.Presentation.Resources.CustomerMessageService;
-import restService.Presentation.Resources.CustomerResource;
+import restService.Infrastructure.CustomerMessageService;
+import restService.Presentation.CustomerResource;
 
 public class VerifyCustomerSteps {
 

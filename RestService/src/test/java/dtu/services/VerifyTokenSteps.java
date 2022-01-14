@@ -7,9 +7,8 @@ import io.cucumber.java.en.When;
 import messaging.Event;
 import messaging.MessageQueue;
 import messaging.implementations.MockMessageQueue;
+import restService.Application.TokenService;
 import restService.Domain.Token;
-import restService.Presentation.Resources.TokenResource;
-import restService.Resources.TokenService;
 
 import javax.ws.rs.core.Response;
 import java.util.concurrent.CompletableFuture;

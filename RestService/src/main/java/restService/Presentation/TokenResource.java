@@ -1,8 +1,8 @@
-package restService.Presentation.Resources;
+package restService.Presentation;
 
 import messaging.MessageQueue;
 import messaging.implementations.RabbitMqQueue;
-import restService.Resources.TokenService;
+import restService.Application.TokenService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

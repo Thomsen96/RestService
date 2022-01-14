@@ -1,4 +1,4 @@
-package restService.Presentation.Resources;
+package restService.Infrastructure;
 
 import messaging.implementations.RabbitMqQueue;
 
@@ -22,12 +22,8 @@ public class CustomerMessageFactory {
 		// is called dependency injection.
 		// At the end, we can use the PaymentService in tests
 		// without sending actual messages to RabbitMq.
-		var messageQueue = new RabbitMqQueue("rabbitMq");
-
-		//TODO: Check how to add busniss logic here.
-		
-		//service = new TokenMessageService(messageQueue, new TokenService(new LocalTokenRepository()));
-		//new StudentRegistrationServiceAdapter(service, mq);
+		var messageQueue = new RabbitMqQueue("localhost");		
+		service = new CustomerMessageService(messageQueue);
 		return service;
   }
 }

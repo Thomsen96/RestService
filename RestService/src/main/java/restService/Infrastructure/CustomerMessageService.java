@@ -1,4 +1,4 @@
-package restService.Presentation.Resources;
+package restService.Infrastructure;
 
 import java.util.concurrent.CompletableFuture;
 
