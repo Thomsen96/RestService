@@ -12,9 +12,7 @@ import java.util.concurrent.Future;
 
 @Path("/customers")
 public class CustomerResource  {
-
 	// mvn compile quarkus:dev
-	
     // Should offer the following:
     // register
     // deregister
@@ -43,6 +41,7 @@ public class CustomerResource  {
 		return Response.status(Response.Status.CREATED)
 				.entity(String.format("Hello %s! Here are %2d tokens!", customerId, numberOfTokens))
 				.build();
+		//return Response.status(Response.Status.CREATED).entity(String.format("Hello %s! Here are %2d tokens!", customerId, numberOfTokens)).build();
 	}
 
 
