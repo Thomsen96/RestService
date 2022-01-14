@@ -24,10 +24,10 @@ public class TokenService {
 
     public Token getTokensMessageSerivce(String customerId, int numOfTokens){
         String sessionID = UUID.randomUUID().toString();
-        String topic = "CustomerVerified";
+        String topic = "TokenCreationRequest";
         sessionHandled = new CompletableFuture<>();
-        Event e = new Event(topic, new Object[]{customerId, sessionID});
-        mq.addHandler(topic + "#" + sessionID, this::handleGetTokens);
+        Event e = new Event(topic, new Object[]{customerId, numOfTokens, sessionID});
+        mq.addHandler("TokenCreationResponse" + "#" + sessionID, this::handleGetTokens);
         mq.publish(e);
         return sessionHandled.join();
     }
