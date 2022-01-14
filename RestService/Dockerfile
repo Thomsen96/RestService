@@ -3,6 +3,6 @@
 
 FROM adoptopenjdk:11-jre-hotspot
 COPY target/lib /usr/src/lib
-COPY target/token-service-1.0.0-runner.jar /usr/src/
+COPY target/rest-service-1.0.0-runner.jar /usr/src/
 WORKDIR /usr/src/
-CMD java -Dquarkus.http.port=8181 -Xmx64m -jar token-service-1.0.0-runner.jar
+CMD java -Dquarkus.http.port=8181 -Xmx64m -jar rest-service-1.0.0-runner.jar
