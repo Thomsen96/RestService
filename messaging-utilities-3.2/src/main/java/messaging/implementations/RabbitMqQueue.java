@@ -27,7 +27,17 @@ public class RabbitMqQueue implements MessageQueue {
 	}
 
 	public RabbitMqQueue(String hostname) {
-		channel = setUpChannel(hostname);
+		String envHostname = System.getenv("RABBIT_MQ_HOSTNAME");
+		if(envHostname != null) 
+		{
+			System.out.println("Connects to RabbitMQ hostname: " + envHostname);
+			channel = setUpChannel(envHostname);
+		}
+		else
+		{
+			System.out.println("Connects to RabbitMQ hostname: " + hostname);
+			channel = setUpChannel(hostname);
+		}
 	}
 
 	@Override
