@@ -1,6 +1,7 @@
 package restService.Presentation.Resources;
 
 import messaging.MessageQueue;
+import restService.Domain.Token;
 import restService.Resources.TokenService;
 
 import javax.ws.rs.*;
@@ -26,7 +27,7 @@ public class TokenResource {
     @Path("{customerId}/{numberOfTokens}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTokens(@PathParam("customerId") String customerId, @PathParam("numberOfTokens") Integer numberOfTokens) {
-        var token = tsr.getTokensMessageSerivce(customerId, numberOfTokens);
+        var token = tsr.getTokensMessageSerivce(customerId, numberOfTokens).getArgument(0, Token.class);
         return Response.status(Response.Status.CREATED).entity(String.format("Hello %s! Here are %2d tokens!", customerId, numberOfTokens)).build();
     }
 }

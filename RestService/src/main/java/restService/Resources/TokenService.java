@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class TokenService {
     private MessageQueue mq;
-    public CompletableFuture<Token> sessionHandled;
+    public CompletableFuture<Event> sessionHandled;
     public TokenService(MessageQueue mq){
         this.mq = mq;
     }
@@ -19,11 +19,21 @@ public class TokenService {
     public void handleGetTokens(Event event) {
 //        String sessionId = event.getArgument(1, String.class);
 //        HashSet returnVal = event.getArgument(0, HashSet.class);
-        sessionHandled.complete(event.getArgument(0, Token.class));
+        sessionHandled.complete(event);
     }
 
-    public Token getTokensMessageSerivce(String customerId, int numOfTokens){
+    public Event getTokensMessageSerivce(String customerId, int numOfTokens){
         String sessionID = UUID.randomUUID().toString();
+        String topic = "TokenCreationRequest";
+        sessionHandled = new CompletableFuture<>();
+        Event e = new Event(topic, new Object[]{customerId, numOfTokens, sessionID});
+        mq.addHandler("TokenCreationResponse" + "#" + sessionID, this::handleGetTokens);
+        mq.publish(e);
+        return sessionHandled.join();
+    }
+
+    public Event getTokensMessageSerivce(String customerId, int numOfTokens, String uid){
+        String sessionID = uid;
         String topic = "TokenCreationRequest";
         sessionHandled = new CompletableFuture<>();
         Event e = new Event(topic, new Object[]{customerId, numOfTokens, sessionID});
