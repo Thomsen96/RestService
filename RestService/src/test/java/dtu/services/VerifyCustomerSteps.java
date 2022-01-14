@@ -36,11 +36,6 @@ public class VerifyCustomerSteps {
 	    throw new io.cucumber.java.PendingException();
 	}
 
-    @Given("a customer requests tokens")
-    public void aCustomerRequestsTokens() {
-		restService.getTokens("123", 5);
-    }
-
     // String customerId = null;
 	// String token = null;
 

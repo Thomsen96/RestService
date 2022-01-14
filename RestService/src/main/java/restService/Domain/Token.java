@@ -1,7 +1,7 @@
 package restService.Domain;
 
 public class Token {
-    String UUID;
-    String customerID;
-
+    private String customerId = null;
+    private String tokenUuid = null;
+    private Boolean tokenValidity;
 }
