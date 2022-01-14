@@ -16,7 +16,7 @@ public class TokenService {
         this.mq = mq;
     }
 
-    private void handleGetTokens(Event event) {
+    public void handleGetTokens(Event event) {
 //        String sessionId = event.getArgument(1, String.class);
 //        HashSet returnVal = event.getArgument(0, HashSet.class);
         sessionHandled.complete(event.getArgument(0, Token.class));
