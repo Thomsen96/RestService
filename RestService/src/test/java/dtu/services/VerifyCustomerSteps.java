@@ -9,13 +9,14 @@ import static org.mockito.Mockito.verify;
 import messaging.Event;
 import messaging.MessageQueue;
 import restService.Presentation.Resources.CustomerMessageService;
+import restService.Presentation.Resources.CustomerResource;
 
 public class VerifyCustomerSteps {
 
 	private MessageQueue messageQueue = mock(MessageQueue.class);
 	// private TokenService tokenService = new TokenService(new LocalTokenRepository());
 	private CustomerMessageService service = new CustomerMessageService(messageQueue);//, tokenService);
-
+	private CustomerResource restService = new CustomerResource();
 	
 	@Given("the endpoint is {string}")
 	public void theEndpointIs(String string) {
@@ -34,8 +35,13 @@ public class VerifyCustomerSteps {
 	    // Write code here that turns the phrase above into concrete actions
 	    throw new io.cucumber.java.PendingException();
 	}
-	
-	// String customerId = null;
+
+    @Given("a customer requests tokens")
+    public void aCustomerRequestsTokens() {
+		restService.getTokens("123", 5);
+    }
+
+    // String customerId = null;
 	// String token = null;
 
 	// @Given("A customer with id {string}")
