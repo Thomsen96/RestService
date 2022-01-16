@@ -4,12 +4,12 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import messaging.implementations.MockMessageQueue;
-import restService.Application.CustomerService;
+//import messaging.implementations.MockMessageQueue;
+//import restService.Application.CustomerService;
 
 public class VerifyCustomerSteps {
 
-	private MockMessageQueue messageQueue = new MockMessageQueue();
+	//private MockMessageQueue messageQueue = new MockMessageQueue();
 	//private CustomerService service = new CustomerService(messageQueue);
 	
 	@Given("the endpoint is {string}")
