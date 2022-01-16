@@ -4,19 +4,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import messaging.Event;
-import messaging.MessageQueue;
-import restService.Infrastructure.CustomerMessageService;
-import restService.Presentation.CustomerResource;
+import messaging.implementations.MockMessageQueue;
+import restService.Application.CustomerService;
 
 public class VerifyCustomerSteps {
 
-	private MessageQueue messageQueue = mock(MessageQueue.class);
-	// private TokenService tokenService = new TokenService(new LocalTokenRepository());
-	private CustomerMessageService service = new CustomerMessageService(messageQueue);//, tokenService);
-	private CustomerResource restService = new CustomerResource();
+	private MockMessageQueue messageQueue = new MockMessageQueue();
+	//private CustomerService service = new CustomerService(messageQueue);
 	
 	@Given("the endpoint is {string}")
 	public void theEndpointIs(String string) {

@@ -18,7 +18,7 @@ public class TokenService {
 
     public String getStatus() {
         messageQueue.addHandler("TokenStatusResponse", this::handleGetStatus);
-        messageQueue.publish(new Event("TokenStatusRequest"));
+        messageQueue.publish(new Event("TokenStatusRequest", new Object[] { "" }));
         return getStatus.join().getArgument(0, String.class);
     }
 

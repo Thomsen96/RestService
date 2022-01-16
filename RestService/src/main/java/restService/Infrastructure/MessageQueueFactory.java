@@ -1,17 +1,18 @@
 package restService.Infrastructure;
 
+import messaging.MessageQueue;
 import messaging.implementations.RabbitMqQueue;
 
-public class CustomerMessageFactory {
+public class MessageQueueFactory {
   
-  static CustomerMessageService service = null;
+  static RabbitMqQueue messageQueue = null;
 
-	public CustomerMessageService getService() {
+	public MessageQueue getMessageQueue() {
 		// The singleton pattern.
 		// Ensure that there is at most
 		// one instance of a PaymentService
-		if (service != null) {
-			return service;
+		if (messageQueue != null) {
+			return messageQueue;
 		}
 		
 		// Hookup the classes to send and receive
@@ -22,8 +23,7 @@ public class CustomerMessageFactory {
 		// is called dependency injection.
 		// At the end, we can use the PaymentService in tests
 		// without sending actual messages to RabbitMq.
-		var messageQueue = new RabbitMqQueue("localhost");		
-		service = new CustomerMessageService(messageQueue);
-		return service;
+		RabbitMqQueue messageQueue = new RabbitMqQueue("localhost");
+		return messageQueue;
   }
 }

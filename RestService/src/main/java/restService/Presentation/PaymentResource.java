@@ -4,7 +4,6 @@ import messaging.Event;
 import messaging.implementations.RabbitMqQueue;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
 import java.util.concurrent.CompletableFuture;
 
 @Path("/payments")

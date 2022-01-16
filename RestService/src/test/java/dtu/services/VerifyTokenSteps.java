@@ -1,27 +1,22 @@
 package dtu.services;
 
-import io.cucumber.java.an.E;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messaging.Event;
-import messaging.MessageQueue;
 import messaging.implementations.MockMessageQueue;
 import restService.Application.TokenService;
 import restService.Domain.Token;
 
-import javax.ws.rs.core.Response;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 
 public class VerifyTokenSteps {
 
-    public MockMessageQueue mq = new MockMessageQueue();
-    public TokenService ts = new TokenService(mq);
-    public Event responseEvent;
-    public CompletableFuture<Event> compFut = new CompletableFuture<>();
+    public MockMessageQueue messageQueue = new MockMessageQueue();
+    public TokenService tokenService = new TokenService(messageQueue);
+    public CompletableFuture<Event> tokenResponse = new CompletableFuture<>();
 
     String id;
     int requestToken;
@@ -35,8 +30,8 @@ public class VerifyTokenSteps {
     @When("the token service responds with a token")
     public void theTokenServiceRespondsWithAToken() {
         new Thread(() -> {
-            responseEvent = ts.getTokensMessageSerivce(id, requestToken);
-            compFut.complete(responseEvent);
+            Event e = tokenService.getTokensMessageSerivce(id, requestToken);
+            tokenResponse.complete(e);
         }).start();
     }
 
@@ -44,9 +39,9 @@ public class VerifyTokenSteps {
     public void theTokenRequestIsSentToTheTokenService() throws InterruptedException {
         String topic = "TokenCreationRequest";
         Thread.sleep(100);
-        String sessionID = mq.getEvent(topic).getArgument(2, String.class);
+        String sessionID = messageQueue.getEvent(topic).getArgument(2, String.class);
         Event e = new Event(topic, new Object[]{id, requestToken, sessionID});
-        assertEquals(e, mq.getEvent(topic));
+        assertEquals(e, messageQueue.getEvent(topic));
     }
 
 
@@ -54,12 +49,12 @@ public class VerifyTokenSteps {
     public void tokenServiceSendsAResponseOnTheQueue() {
         // i need a sessionID to complete this test
         String sessionID = "";
-        ts.handleGetTokens(new Event("TokenCreationResponse#" + sessionID, new Object[] {new Token("id", "tid", true)}));
+        tokenService.handleGetTokens(new Event("TokenCreationResponse#" + sessionID, new Object[] {new Token("id", "tid", true)}));
     }
 
     @Then("the service can return the token to the user")
     public void theServiceCanReturnTheTokenToTheUser() {
         Token t = new Token("id", "tid", true);
-        assertEquals(compFut.join().getArgument(0, Token.class), t);
+        assertEquals(tokenResponse.join().getArgument(0, Token.class), t);
     }
 }

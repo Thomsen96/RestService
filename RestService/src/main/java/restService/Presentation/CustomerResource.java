@@ -1,25 +1,23 @@
 package restService.Presentation;
 
-import messaging.MessageQueue;
-import restService.Infrastructure.CustomerMessageFactory;
-import restService.Infrastructure.CustomerMessageService;
+import restService.Application.CustomerService;
+import restService.Infrastructure.MessageQueueFactory;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 
-import java.util.concurrent.CompletableFuture;
 
 @Path("/customers")
 public class CustomerResource  {
-	// mvn compile quarkus:dev
-    // Should offer the following:
-    // register
-    // deregister
-    // getTokens
-    // getReport
-	CustomerMessageService cms = new CustomerMessageFactory().getService();
-	private CompletableFuture<String> sessionHandled;
 
-	//GET TOKENS IS FOUND IN TOKENRESOURCE OR TOKENSERVICE
+	CustomerService customerService = new CustomerService(new MessageQueueFactory().getMessageQueue());
+
+    @GET
+    @Path("/status")
+    public Response get() {
+        return Response.status(Response.Status.OK).entity(customerService.getStatus()).build();
+    }
+    
 
 //	@POST
 //	@Path("{customerId}/{numberOfTokens}")

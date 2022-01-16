@@ -1,9 +1,7 @@
 package restService.Presentation;
 
-import messaging.MessageQueue;
-import messaging.implementations.RabbitMqQueue;
 import restService.Application.TokenService;
-import restService.Infrastructure.TokenMessageFactory;
+import restService.Infrastructure.MessageQueueFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -11,17 +9,8 @@ import javax.ws.rs.core.Response;
 
 @Path("/tokens")
 public class TokenResource {
-    // mvn compile quarkus:dev
-    // Should offer the following:
-    // register
-    // deregister
-    // getTokens
-    // getReport
-    private MessageQueue mq = new RabbitMqQueue("localhost");
-    private TokenService tokenService = new TokenService(mq);
-    //CustomerMessageService cms = new CustomerMessageService(mq);
 
-    //TokenService tsr = new TokenService(mq);
+    private TokenService tokenService = new TokenService(new MessageQueueFactory().getMessageQueue());
 
     @POST
     @Path("{customerId}/{numberOfTokens}")
