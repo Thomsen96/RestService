@@ -1,6 +1,6 @@
 package restService.Presentation;
 
-import restService.Application.CustomerService;
+import restService.Application.AccountService;
 import restService.Infrastructure.MessageQueueFactory;
 
 import javax.ws.rs.*;
@@ -10,12 +10,12 @@ import javax.ws.rs.core.Response;
 @Path("/customers")
 public class CustomerResource  {
 
-	CustomerService customerService = new CustomerService(new MessageQueueFactory().getMessageQueue());
+	AccountService accountService = new AccountService(new MessageQueueFactory().getMessageQueue());
 
     @GET
     @Path("/status")
     public Response get() {
-        return Response.status(Response.Status.OK).entity(customerService.getStatus()).build();
+        return Response.status(Response.Status.OK).entity(accountService.getStatus()).build();
     }
     
 

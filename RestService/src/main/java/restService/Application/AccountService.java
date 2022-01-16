@@ -5,19 +5,19 @@ import java.util.concurrent.CompletableFuture;
 import messaging.Event;
 import messaging.MessageQueue;
 
-public class CustomerService {
+public class AccountService {
 
   private MessageQueue messageQueue;
 
   private CompletableFuture<Event> getStatus = new CompletableFuture<>();
 
-  public CustomerService(MessageQueue messageQueue) {
+  public AccountService(MessageQueue messageQueue) {
     this.messageQueue = messageQueue;
   }
 
   public String getStatus() {
-    messageQueue.addHandler("CustomerStatusResponse", this::handleGetStatus);
-    messageQueue.publish(new Event("CustomerStatusRequest", new Object[] { "" }));
+    messageQueue.addHandler("AccountStatusResponse", this::handleGetStatus);
+    messageQueue.publish(new Event("AccountStatusRequest", new Object[] { "" }));
     return getStatus.join().getArgument(0, String.class);
   }
 
