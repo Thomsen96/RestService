@@ -21,7 +21,7 @@ public class TokenService {
         (new Thread() {
             public void run() {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                     getStatus.complete(new Event("", new Object[] { "Token no reply from a Token service" }));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
