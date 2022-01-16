@@ -3,6 +3,7 @@ package restService.Presentation;
 import messaging.MessageQueue;
 import messaging.implementations.RabbitMqQueue;
 import restService.Application.TokenService;
+import restService.Infrastructure.TokenMessageFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -16,7 +17,8 @@ public class TokenResource {
     // deregister
     // getTokens
     // getReport
-    //public MessageQueue mq = new RabbitMqQueue("localhost");
+    private MessageQueue mq = new RabbitMqQueue("localhost");
+    private TokenService tokenService = new TokenService(mq);
     //CustomerMessageService cms = new CustomerMessageService(mq);
 
     //TokenService tsr = new TokenService(mq);
@@ -31,6 +33,6 @@ public class TokenResource {
     @GET
     @Path("/status")
     public Response get() {
-        return Response.status(Response.Status.OK).entity(new String("OK")).build();
+        return Response.status(Response.Status.OK).entity(tokenService.getStatus()).build();
     }
 }

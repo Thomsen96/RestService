@@ -2,19 +2,31 @@ package restService.Application;
 
 import messaging.Event;
 import messaging.MessageQueue;
-import restService.Domain.Token;
 
-import javax.ws.rs.core.Response;
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class TokenService {
-    private MessageQueue mq;
-    public CompletableFuture<Event> sessionHandled;
-    public TokenService(MessageQueue mq){
-        this.mq = mq;
+    private MessageQueue messageQueue;
+    private CompletableFuture<Event> getStatus = new CompletableFuture<>();
+    private CompletableFuture<Event> sessionHandled = new CompletableFuture<>();
+
+    public TokenService(MessageQueue messageQueue){
+        this.messageQueue = messageQueue;
     }
+
+
+    public String getStatus() {
+        messageQueue.addHandler("TokenStatusResponse", this::handleGetStatus);
+        messageQueue.publish(new Event("TokenStatusRequest"));
+        return getStatus.join().getArgument(0, String.class);
+    }
+
+    public void handleGetStatus(Event event) {
+        getStatus.complete(event);
+    }
+
+
 
     public void handleGetTokens(Event event) {
 //        String sessionId = event.getArgument(1, String.class);
@@ -27,8 +39,8 @@ public class TokenService {
         String topic = "TokenCreationRequest";
         sessionHandled = new CompletableFuture<>();
         Event e = new Event(topic, new Object[]{customerId, numOfTokens, sessionID});
-        mq.addHandler("TokenCreationResponse" + "#" + sessionID, this::handleGetTokens);
-        mq.publish(e);
+        messageQueue.addHandler("TokenCreationResponse" + "#" + sessionID, this::handleGetTokens);
+        messageQueue.publish(e);
         return sessionHandled.join();
     }
 
@@ -37,8 +49,8 @@ public class TokenService {
         String topic = "TokenCreationRequest";
         sessionHandled = new CompletableFuture<>();
         Event e = new Event(topic, new Object[]{customerId, numOfTokens, sessionID});
-        mq.addHandler("TokenCreationResponse" + "#" + sessionID, this::handleGetTokens);
-        mq.publish(e);
+        messageQueue.addHandler("TokenCreationResponse" + "#" + sessionID, this::handleGetTokens);
+        messageQueue.publish(e);
         return sessionHandled.join();
     }
 }
