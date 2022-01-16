@@ -39,7 +39,7 @@ public class ServiceStatusSteps {
   public void theEventHaveBeenSent(String eventTopic) {
     Event event = new Event(eventTopic);
     try {
-      Thread.sleep(20);
+      Thread.sleep(50);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
