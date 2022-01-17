@@ -17,7 +17,7 @@ public class CustomerEventHandler {
     public CustomerEventHandler(MessageQueue messageQueue) {
         this.messageQueue = messageQueue;
 
-        this.messageQueue.addHandler("CustomerCreationRequest", this::createCustomerCreationResponse);
+        this.messageQueue.addHandler("CustomerCreationResponse", this::customerCreationResponse);
     }
     
     private String generateSessionId() {
@@ -33,7 +33,7 @@ public class CustomerEventHandler {
     	return sessionId;
     }
     
-    public void createCustomerCreationResponse(Event event) {
+    public void customerCreationResponse(Event event) {
     	String accountNumber = event.getArgument(0, String.class);
         Event response = new Event("MerchantVerificationRequest", new Object[] {  } );
         messageQueue.publish(response);
