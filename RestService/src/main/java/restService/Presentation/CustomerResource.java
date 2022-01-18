@@ -12,6 +12,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import messaging.EventResponse;
+
 
 @Path("/customers")
 public class CustomerResource  {
@@ -63,7 +65,7 @@ public class CustomerResource  {
 		
 		try {
 			return Response.status(Response.Status.OK)
-					.entity(tokenService.getTokensMessageService(data.customerId, numberOfTokens, UUID.randomUUID().toString())).build();
+					.entity(tokenService.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, numberOfTokens).getArgument(0, EventResponse.class).getArgument(0, Token[].class)).build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
