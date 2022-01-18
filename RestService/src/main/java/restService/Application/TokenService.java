@@ -41,7 +41,7 @@ public class TokenService {
         sessionHandled.complete(event);
     }
 
-    public Event getTokensMessageSerivce(String customerId, int numOfTokens) {
+    public Event getTokensMessageService(String customerId, int numOfTokens) {
         String sessionID = UUID.randomUUID().toString();
         String topic = "TokenCreationRequest";
         sessionHandled = new CompletableFuture<>();
@@ -51,7 +51,7 @@ public class TokenService {
         return sessionHandled.join();
     }
 
-    public Event getTokensMessageSerivce(String customerId, int numOfTokens, String uid) {
+    public Event getTokensMessageService(String customerId, int numOfTokens, String uid) {
         String sessionID = uid;
         String topic = "TokenCreationRequest";
         sessionHandled = new CompletableFuture<>();

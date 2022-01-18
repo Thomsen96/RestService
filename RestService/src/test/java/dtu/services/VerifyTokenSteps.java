@@ -30,7 +30,7 @@ public class VerifyTokenSteps {
     @When("the token service responds with a token")
     public void theTokenServiceRespondsWithAToken() {
         new Thread(() -> {
-            Event e = tokenService.getTokensMessageSerivce(id, requestToken);
+            Event e = tokenService.getTokensMessageService(id, requestToken);
             tokenResponse.complete(e);
         }).start();
     }
