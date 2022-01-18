@@ -2,6 +2,8 @@ package restService.Application;
 
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 import messaging.Event;
 import messaging.EventResponse;
@@ -27,69 +29,67 @@ public class AccountService {
 
 	private static MessageQueue messageQueue;
 
-	private CompletableFuture<Event> getStatus = new CompletableFuture<>();
+	private ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
 
 	public String getStatus(String sessionId) {
 		messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
+		sessions.put(sessionId, new CompletableFuture<Event>());
 		messageQueue.publish(new Event("AccountStatusRequest", new Object[] { sessionId }));
 		(new Thread() {
 			public void run() {
 				try {
 					Thread.sleep(5000);
-					getStatus.complete(new Event("", new Object[] { "No reply from a Account service" }));
+					sessions.get(sessionId).complete(new Event("", new EventResponse(sessionId, false, null, "No reply from a Account service")));
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}).start();
-		return getStatus.join().getArgument(0, EventResponse.class).getArgument(0, String.class);
+		return sessions.get(sessionId).join().getArgument(0, EventResponse.class).getArgument(0, String.class);
 	}
 
 	public void handleGetStatus(Event event) {
-		getStatus.complete(event);
+		String sessionId = event.getArgument(0, EventResponse.class).getSessionId();
+		sessions.get(sessionId).complete(event);
 	}
-
-	public static HashMap<String, CompletableFuture<String>> customerCreationPending = new HashMap<String, CompletableFuture<String>>();
 
 	public AccountService(MessageQueue messageQueue) {
 		AccountService.messageQueue = messageQueue;
 	}
 
-	public String createCustomerCreationRequest(String sessionId, String accountNumber, Role role) {
+	public String createCustomerCreationRequest(String sessionId, String accountNumber, Role role) throws InterruptedException, ExecutionException {
 
 		// Create a place for the response to reside
-		customerCreationPending.put(sessionId, new CompletableFuture<String>());
+		sessions.put(sessionId, new CompletableFuture<Event>());
 
 		// Create the event and send it
-		Event event = new Event(
-				role.CREATION_REQUEST,
-				new Object[] { accountNumber, sessionId });
+		Event event = new Event(role.CREATION_REQUEST, accountNumber, sessionId);
 
+		messageQueue.addHandler(role.CREATION_RESPONSE + "."+  sessionId, this::customerCreationResponseHandler);
 		messageQueue.publish(event);
-
-		// Create a handler for the response
-		messageQueue.addHandler(role.CREATION_RESPONSE.concat(".").concat(sessionId), e -> {
-			customerCreationResponseHandler(sessionId, event);
-		});
 
 		// Create a timeout
 		(new Thread() {
 			public void run() {
 				try {
 					Thread.sleep(5000);
-					customerCreationPending.get(sessionId).complete(null);
+					sessions.get(sessionId).complete(new Event("", new EventResponse(sessionId, false, "No response in time")));
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}).start();
 
-		return customerCreationPending.get(sessionId).join();
+		if(sessions.get(sessionId).join().getArgument(0, EventResponse.class).isSuccess())
+		{
+			return sessions.get(sessionId).get().getArgument(0, EventResponse.class).getArgument(0, String.class);
+		}
+		return sessions.get(sessionId).get().getArgument(0, EventResponse.class).getErrorMessage();
 	}
 
-	public void customerCreationResponseHandler(String sessionId, Event event) {
-		String customerId = event.getArgument(0, String.class);
-		customerCreationPending.get(sessionId).complete(customerId);
+	public void customerCreationResponseHandler(Event event) {
+		String sessionId = event.getArgument(0, EventResponse.class).getSessionId();
+		sessions.get(sessionId).complete(event);
 	}
 
 }
