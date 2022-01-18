@@ -77,9 +77,9 @@ public class CustomerEventsSteps {
 	}
 	
 	@When("the createCustomerResponse is received")
-	public void theCreateCustomerResponseIsReceived() {
-		Event e = new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, "123"));
-		accountService.customerCreationResponseHandler(e);
+	public void theCreateCustomerResponseIsReceived() throws InterruptedException {
+		Thread.sleep(50);
+		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, "123")));
 	}
 	
 	@Then("a new customer has been created with a customerId")
