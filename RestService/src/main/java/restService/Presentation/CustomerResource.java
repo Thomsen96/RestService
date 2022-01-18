@@ -52,13 +52,27 @@ public class CustomerResource  {
 		HashSet<Token> tokens = new HashSet<Token>();
 		tokens.add(new Token(data.customerId, data.numberOfTokens, true));
 		
-		return Response.status(Response.Status.OK).entity(tokens).build();
-//		try {
-//			service.createCustomer(CreationRequest.getAccountNumber());
-//		} catch (BankServiceException_Exception e) {
-//			e.printStackTrace();
-//			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-//		}
+		int numberOfTokens;
+		try {
+			numberOfTokens = Integer.parseInt(data.numberOfTokens);			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+
+		
+		try {
+			return Response.status(Response.Status.OK)
+					.entity(tokenService.getTokensMessageService(data.customerId, numberOfTokens, UUID.randomUUID().toString())).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+		}
+		
+//		__TokenCreationRequest__
+//			CustomerId
+//			NumberOfTokens
+//			SessionId
 	}
 	
 	
