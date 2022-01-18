@@ -17,7 +17,7 @@ public class TokenService {
 
     public String getStatus(String sessionId) {
         messageQueue.addHandler("TokenStatusResponse." + sessionId, this::handleGetStatus);
-        messageQueue.publish(new Event("TokenStatusRequest." + sessionId, new Object[] { sessionId }));
+        messageQueue.publish(new Event("TokenStatusRequest", new Object[] { sessionId }));
         (new Thread() {
             public void run() {
                 try {

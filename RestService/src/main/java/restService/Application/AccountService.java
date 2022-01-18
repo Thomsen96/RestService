@@ -18,8 +18,8 @@ public class AccountService {
 //  }
 
   public String getStatus(String sessionId) {
-    messageQueue.addHandler("AccountStatusResponse", this::handleGetStatus);
-    messageQueue.publish(new Event("AccountStatusRequest." + sessionId, new Object[] { sessionId }));
+    messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
+    messageQueue.publish(new Event("AccountStatusRequest", new Object[] { sessionId }));
     (new Thread() {
       public void run() {
         try {
