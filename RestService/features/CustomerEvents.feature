@@ -1,10 +1,11 @@
 Feature: Customer endpoint
 
+# Creating customers
   Scenario: CustomerCreationRequest
 		Given a new createCustomer session has started with accountId "00001"
 		When the message is sent
 		And the createCustomerResponse is received
-		Then a new customer customer has been created with a customerId
+		Then a new customer has been created with a customerId
 		
 	Scenario: CustomerCreationRequest Race Condition 
 		Given a new createCustomer session has started with accountId "00001"
@@ -13,6 +14,20 @@ Feature: Customer endpoint
 		And the createCustomerResponses are received in reverse order
 		Then two distinct CustomerCreationResponses are received
 				
+# Creating merchants
+  Scenario: MerchantCreationRequest
+		Given a new createMerchant session has started with accountId "00001"
+		When the message is sent
+		And the createCustomerResponse is received
+		Then a new customer has been created with a customerId
+		
+	Scenario: MerchantCreationRequest Race Condition 
+		Given a new createMerchant session has started with accountId "00001"
+		And another new createMerchant session has started with accountId "00002"
+		When the messages are sent at the same time
+		And the createCustomerResponses are received in reverse order
+		Then two distinct CustomerCreationResponses are received
+
         
 
   #Scenario: Create a CustomerCreationRequest

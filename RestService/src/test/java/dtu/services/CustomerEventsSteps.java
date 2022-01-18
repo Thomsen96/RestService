@@ -2,7 +2,6 @@ package dtu.services;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -48,10 +47,25 @@ public class CustomerEventsSteps {
 	    this.role = Role.CUSTOMER;
 	}
 	
+	@Given("a new createMerchant session has started with accountId {string}")
+	public void aNewCreateMerchantSessionHasStartedWithAccountId(String accountId) {
+		this.accountNumber = accountId;
+		this.sessionId = UUID.randomUUID().toString();
+		this.role = Role.MERCHANT;
+	}
+
+	@Given("another new createMerchant session has started with accountId {string}")
+	public void anotherNewCreateMerchantSessionHasStartedWithAccountId(String accountId) {
+	    this.accountNumber2 = accountId;
+	    this.sessionId2 = UUID.randomUUID().toString();
+	    this.role = Role.MERCHANT;
+	}
+
+	
 	@When("the message is sent")
 	public void theMessageIsSent() {
 		var thread = new Thread(() -> {
-			customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+			this.customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
 		});
 		thread.start();
 	}
@@ -62,18 +76,19 @@ public class CustomerEventsSteps {
 		accountService.customerCreationResponseHandler(sessionId, e);
 	}
 	
-	@Then("a new customer customer has been created with a customerId")
-	public void aNewCustomerCustomerHasBeenCreatedWithACustomerId() {
-	    assertNotNull(customerId);
+	@Then("a new customer has been created with a customerId")
+	public void aNewCustomerHasBeenCreatedWithACustomerId() throws InterruptedException {
+		Thread.sleep(300);
+	    assertNotNull(this.customerId);
 	}
 
 	@When("the messages are sent at the same time")
 	public void theMessagesAreSentAtTheSameTime() {
 		var thread1 = new Thread(() -> {
-			customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+			this.customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
 		});
 		var thread2 = new Thread(() -> {
-			customerId2 = accountService.createCustomerCreationRequest(sessionId2, accountNumber2, role);
+			this.customerId2 = accountService.createCustomerCreationRequest(sessionId2, accountNumber2, role);
 		});
 		thread1.start();
 		thread2.start();
@@ -81,9 +96,9 @@ public class CustomerEventsSteps {
 
 	@Then("two distinct CustomerCreationResponses are received")
 	public void twoDistinctCustomerCreationResponsesAreReceived() {
-	    assertNotNull(result);
-	    assertNotNull(result2);
-	    assertNotEquals(result, result2);
+	    assertNotNull(this.result);
+	    assertNotNull(this.result2);
+	    assertNotEquals(this.result, this.result2);
 	}
 	
 	@When("the createCustomerResponses are received in reverse order")
