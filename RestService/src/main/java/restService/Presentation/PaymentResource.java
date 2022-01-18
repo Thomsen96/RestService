@@ -3,10 +3,8 @@ package restService.Presentation;
 import messaging.Event;
 import messaging.implementations.RabbitMqQueue;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.print.attribute.standard.Media;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
@@ -57,6 +55,23 @@ public class PaymentResource {
         var future = map.get(sid);
         future.complete(event);
     }
+
+    CompletableFuture<String> status = new CompletableFuture<>();
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response status() throws ExecutionException, InterruptedException {
+        queue.publish(new Event("PaymentStatusRequest"));
+        queue.addHandler("PaymentStatusResponse", this::handlePaymentStatusResponse);
+        status.join();
+        return Response.status(Response.Status.OK).entity(status.get()).build();
+    }
+
+    public void handlePaymentStatusResponse(Event event) {
+        status.complete(event.getArgument(0, String.class));
+    }
+
+
 
 
 }
