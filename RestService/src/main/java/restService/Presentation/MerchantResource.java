@@ -2,7 +2,6 @@ package restService.Presentation;
 
 import restService.Application.AccountService;
 import restService.Application.AccountService.Role;
-import restService.Application.TokenService;
 import restService.Infrastructure.MessageQueueFactory;
 
 import java.util.UUID;
