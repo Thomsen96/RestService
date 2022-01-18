@@ -5,7 +5,6 @@ import java.util.concurrent.CompletableFuture;
 
 import messaging.Event;
 import messaging.MessageQueue;
-import restService.Presentation.CustomerEventHandler;
 
 public class AccountService {
 
@@ -13,10 +12,7 @@ public class AccountService {
 
   private CompletableFuture<Event> getStatus = new CompletableFuture<>();
 
-//  public AccountService(MessageQueue messageQueue) {
-//    this.messageQueue = messageQueue;
-//  }
-
+  
   public String getStatus(String sessionId) {
     messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
     messageQueue.publish(new Event("AccountStatusRequest", new Object[] { sessionId }));
@@ -41,14 +37,11 @@ public class AccountService {
   public static final String CUSTOMER_CREATION_REQUEST = "CustomerCreationRequest";
   public static final String CUSTOMER_CREATION_RESPONSE = "CustomerCreationResponse";
 	
-  //private static MessageQueue messageQueue;
-
+  
   public static HashMap<String, CompletableFuture<String>> customerCreationPending;
   
   public AccountService(MessageQueue messageQueue) {
 	  AccountService.messageQueue = messageQueue;
-
-      //this.messageQueue.addHandler("CustomerCreationResponse_old", this::customerCreationResponse);
   }
   
   
@@ -63,7 +56,7 @@ public class AccountService {
       
   	// Create a handler for the response
   	messageQueue.addHandler(CUSTOMER_CREATION_RESPONSE.concat(".").concat(sessionId), e -> {
-  		extracted(sessionId, event);
+  		customerCreationResponseHandler(sessionId, event);
   	});
   	
   	// Create a timeout
@@ -82,16 +75,11 @@ public class AccountService {
   }
 
 
-	public void extracted(String sessionId, Event event) {
+	public void customerCreationResponseHandler(String sessionId, Event event) {
 		// Extract the customerId from response
 		String customerId = event.getArgument(0, String.class);
 		customerCreationPending.get(sessionId).complete(customerId);
 	}
   
-//  public void customerCreationResponse(Event event) {
-//  	String accountNumber = event.getArgument(0, String.class);
-//      Event response = new Event("MerchantVerificationRequest", new Object[] {  } );
-//      messageQueue.publish(response);
-//  }
 
 }
