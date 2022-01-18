@@ -1,6 +1,7 @@
 package restService.Application;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import messaging.Event;
@@ -38,7 +39,7 @@ public class AccountService {
   public static final String CUSTOMER_CREATION_RESPONSE = "CustomerCreationResponse";
 	
   
-  public static HashMap<String, CompletableFuture<String>> customerCreationPending;
+  public static HashMap<String, CompletableFuture<String>> customerCreationPending = new HashMap<String, CompletableFuture<String>>();
   
   public AccountService(MessageQueue messageQueue) {
 	  AccountService.messageQueue = messageQueue;
@@ -64,7 +65,7 @@ public class AccountService {
           public void run() {
               try {
                   Thread.sleep(5000);
-                  customerCreationPending.get(sessionId).complete("Timed out");
+                  customerCreationPending.get(sessionId).complete(null);
               } catch (InterruptedException e) {
                   e.printStackTrace();
               }
