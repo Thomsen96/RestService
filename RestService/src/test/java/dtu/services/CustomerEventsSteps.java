@@ -78,7 +78,7 @@ public class CustomerEventsSteps {
 	
 	@When("the createCustomerResponse is received")
 	public void theCreateCustomerResponseIsReceived() {
-		Event e = new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, 123));
+		Event e = new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, "123"));
 		accountService.customerCreationResponseHandler(e);
 	}
 	
@@ -118,8 +118,8 @@ public class CustomerEventsSteps {
 	@When("the createCustomerResponses are received in reverse order")
 	public void theCreateCustomerResponsesAreReceivedInReverseOrder() {
 		//TODO: Creation of actual customers is not tested here?
-		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId2, true, null)));
-		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null)));
+		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId2, true, null, "123")));
+		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, "123")));
 	}
 	
 }
