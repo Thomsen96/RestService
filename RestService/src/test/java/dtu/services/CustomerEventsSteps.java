@@ -5,9 +5,11 @@ import static org.mockito.Mockito.mock;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import io.cucumber.java.en.*;
 import messaging.Event;
+import messaging.EventResponse;
 import messaging.MessageQueue;
 import restService.Application.AccountService;
 import restService.Application.AccountService.Role;
@@ -65,15 +67,19 @@ public class CustomerEventsSteps {
 	@When("the message is sent")
 	public void theMessageIsSent() {
 		var thread = new Thread(() -> {
-			this.customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+			try {
+				this.customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
 		});
 		thread.start();
 	}
 	
 	@When("the createCustomerResponse is received")
 	public void theCreateCustomerResponseIsReceived() {
-		Event e = new Event(role.CREATION_RESPONSE, new Object[] {UUID.randomUUID().toString()});
-		accountService.customerCreationResponseHandler(sessionId, e);
+		Event e = new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, "123"));
+		accountService.customerCreationResponseHandler(e);
 	}
 	
 	@Then("a new customer has been created with a customerId")
@@ -85,10 +91,18 @@ public class CustomerEventsSteps {
 	@When("the messages are sent at the same time")
 	public void theMessagesAreSentAtTheSameTime() {
 		var thread1 = new Thread(() -> {
-			this.customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+			try {
+				this.customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
 		});
 		var thread2 = new Thread(() -> {
-			this.customerId2 = accountService.createCustomerCreationRequest(sessionId2, accountNumber2, role);
+			try {
+				this.customerId2 = accountService.createCustomerCreationRequest(sessionId2, accountNumber2, role);
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
 		});
 		thread1.start();
 		thread2.start();
@@ -103,11 +117,9 @@ public class CustomerEventsSteps {
 	
 	@When("the createCustomerResponses are received in reverse order")
 	public void theCreateCustomerResponsesAreReceivedInReverseOrder() {
-		accountService.customerCreationResponseHandler(sessionId2,
-				new Event(role.CREATION_RESPONSE, new Object[] {UUID.randomUUID().toString()}));
-		
-		accountService.customerCreationResponseHandler(sessionId, 
-				new Event(role.CREATION_RESPONSE, new Object[] {UUID.randomUUID().toString()}));
+		//TODO: Creation of actual customers is not tested here?
+		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId2, true, null, "123")));
+		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, "123")));
 	}
 	
 }
