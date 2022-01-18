@@ -1,8 +1,16 @@
 package messaging;
+<<<<<<< HEAD
 import java.util.Arrays;
 
 import com.google.gson.Gson;
 
+=======
+
+import com.google.gson.Gson;
+
+import java.util.Arrays;
+
+>>>>>>> e16ad66b27f9213febcb9dffe9842d1157ead914
 public class EventResponse {
 
     private String sessionId;

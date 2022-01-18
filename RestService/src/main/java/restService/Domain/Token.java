@@ -3,9 +3,9 @@ package restService.Domain;
 import java.util.Objects;
 
 public class Token {
-    private String customerId = null;
-    private String tokenUuid = null;
-    private Boolean tokenValidity;
+    public String customerId = null;
+    public String tokenUuid = null;
+    public Boolean tokenValidity;
 
     public Token (String id, String tokenId, Boolean valid) {
         this.customerId = id;

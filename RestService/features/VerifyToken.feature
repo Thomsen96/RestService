@@ -1,4 +1,4 @@
-Feature: Customer endpoint
+Feature: Verify Token endpoint
 
   Scenario: A customer request tokens
     Given the customer with id "idofCustomer" wants 5 tokens request tokens
