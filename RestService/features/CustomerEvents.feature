@@ -1,4 +1,25 @@
-Feature: Customer endpoint
+#Feature: Customer endpoint
+#
+#
+  #Scenario: CustomerCreationRequest Race Condition
+#		Given a new createCustomer session has started with accountId "00001"
+#		When the message is sent
+#		And the createCustomerResponse is received
+#		Then a new customer customer has been created with a customerId
+#		
+#		
+#		Given a new createCustomer session has started with accountId "00001"
+#		And another new createCustomer session has started with accountId "00002"
+#		When the messages are sent at the same time
+#		And the createCustomerResponses are received in reverse order
+#		Then two distinct CustomerCreationResponses are received
+				
+
+
+
+
+
+
 
   #Scenario: Create a CustomerCreationRequest
     #Given a REST message with account number "0101010"
@@ -11,18 +32,6 @@ Feature: Customer endpoint
 #		And the createCustomerResponse is received
 #		Then a new customer customer has been created with a customerId
 
-  Scenario: CustomerCreationRequest Race Condition
-		Given a new createCustomer session has started with accountId "00001"
-		When the message is sent
-		And the createCustomerResponse is received
-		Then a new customer customer has been created with a customerId
-		
-		
-		Given a new createCustomer session has started with accountId "00001"
-		And another new createCustomer session has started with accountId "00002"
-		When the messages are sent at the same time 
-		Then two distinct CustomerCreationResponses are received
-				
 #	
 #  #Scenario: Receive a CustomerCreationResponse
 #    #Given a CustomerCreationResponse message with sessionId "000111" and CustomerId "11111"
