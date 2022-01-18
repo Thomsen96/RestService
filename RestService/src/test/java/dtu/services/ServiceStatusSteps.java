@@ -1,6 +1,7 @@
 package dtu.services;
 
 import messaging.Event;
+import messaging.EventResponse;
 import messaging.implementations.MockMessageQueue;
 import restService.Application.AccountService;
 import restService.Application.TokenService;
@@ -48,7 +49,7 @@ public class ServiceStatusSteps {
       e.printStackTrace();
     }
 
-    Event expectedEvent = new Event(eventTopic, new Object[] { sessionId });
+    Event expectedEvent = new Event(eventTopic, sessionId );
     Event actualEvent = messageQueue.getEvent(eventTopic);
     
     assertEquals(expectedEvent, actualEvent );
@@ -56,13 +57,13 @@ public class ServiceStatusSteps {
 
   @When("the Token service replies with the status message {string}")
   public void theTokenServiceRepliesWithTheStatusMessage(String statusMessage) {
-    Event event = new Event("TokenStatusResponse." + sessionId, new Object[] { statusMessage });
-    tokenService.handleGetStatus(event);
+    Event event = new Event("TokenStatusResponse." + sessionId, new EventResponse(sessionId, true, null, statusMessage ));
+    tokenService.handleResponse(event);
   }
 
   @When("the Account service replies with the status message {string}")
   public void theAccountServiceRepliesWithTheStatusMessage(String statusMessage) {
-    Event event = new Event("AccountStatusResponse." + sessionId, new Object[] { statusMessage });
+    Event event = new Event("AccountStatusResponse." + sessionId, new EventResponse(sessionId, true, null, statusMessage ));
     AccountService.handleGetStatus(event);
   }
 

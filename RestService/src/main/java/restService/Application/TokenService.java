@@ -1,63 +1,66 @@
 package restService.Application;
 
 import messaging.Event;
+import messaging.EventResponse;
 import messaging.MessageQueue;
 
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+
+import io.vertx.ext.web.Session;
 
 public class TokenService {
     private MessageQueue messageQueue;
-    private CompletableFuture<Event> getStatus = new CompletableFuture<>();
-    private CompletableFuture<Event> sessionHandled = new CompletableFuture<>();
+
+    private static ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
 
     public TokenService(MessageQueue messageQueue) {
         this.messageQueue = messageQueue;
     }
 
     public String getStatus(String sessionId) {
-        messageQueue.addHandler("TokenStatusResponse." + sessionId, this::handleGetStatus);
+        messageQueue.addHandler("TokenStatusResponse." + sessionId, this::handleResponse);
+        sessions.put(sessionId, new CompletableFuture<Event>());
         messageQueue.publish(new Event("TokenStatusRequest", new Object[] { sessionId }));
+        
         (new Thread() {
             public void run() {
                 try {
                     Thread.sleep(5000);
-                    getStatus.complete(new Event("", new Object[] { "Token no reply from a Token service" }));
+                    EventResponse eventResponse = new EventResponse(sessionId, false, "No reply from a Token service");
+                    sessions.get(sessionId).complete(new Event("", eventResponse));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
-        return getStatus.join().getArgument(0, String.class);
+        EventResponse eventResponse = getResponse(sessionId);
+
+        return eventResponse.getArgument(0, String.class);
     }
 
-    public void handleGetStatus(Event event) {
-        getStatus.complete(event);
+    
+    
+    public Event getTokensMessageService(String sessionId, String customerId, int numOfTokens) {
+        sessions.put(sessionId, new CompletableFuture<Event>());
+        Event event = new Event("TokenCreationRequest", customerId, numOfTokens, sessionId);
+        messageQueue.addHandler("TokenCreationResponse." + sessionId, this::handleResponse);
+        messageQueue.publish(event);
+        
+        // TODO: Add timeout handling
+        
+        return sessions.get(sessionId).join();
     }
 
-    public void handleGetTokens(Event event) {
-        // String sessionId = event.getArgument(1, String.class);
-        // HashSet returnVal = event.getArgument(0, HashSet.class);
-        sessionHandled.complete(event);
+    private EventResponse getResponse(String sessionId) {
+        return sessions.get(sessionId).join().getArgument(0, EventResponse.class);
     }
-
-    public Event getTokensMessageSerivce(String customerId, int numOfTokens) {
-        String sessionID = UUID.randomUUID().toString();
-        String topic = "TokenCreationRequest";
-        sessionHandled = new CompletableFuture<>();
-        Event e = new Event(topic, new Object[] { customerId, numOfTokens, sessionID });
-        messageQueue.addHandler("TokenCreationResponse" + "#" + sessionID, this::handleGetTokens);
-        messageQueue.publish(e);
-        return sessionHandled.join();
-    }
-
-    public Event getTokensMessageSerivce(String customerId, int numOfTokens, String uid) {
-        String sessionID = uid;
-        String topic = "TokenCreationRequest";
-        sessionHandled = new CompletableFuture<>();
-        Event e = new Event(topic, new Object[] { customerId, numOfTokens, sessionID });
-        messageQueue.addHandler("TokenCreationResponse" + "#" + sessionID, this::handleGetTokens);
-        messageQueue.publish(e);
-        return sessionHandled.join();
+    
+    
+    public void handleResponse(Event event) {
+        EventResponse eventResponse = event.getArgument(0, EventResponse.class);
+        sessions.get(eventResponse.getSessionId()).complete(event);
     }
 }

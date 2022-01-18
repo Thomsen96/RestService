@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 import messaging.Event;
+import messaging.EventResponse;
 import messaging.MessageQueue;
 
 public class AccountService {
@@ -26,7 +27,7 @@ public class AccountService {
         }
       }
     }).start();
-    return getStatus.join().getArgument(0, String.class);
+    return getStatus.join().getArgument(0, EventResponse.class).getArgument(0, String.class);
   }
 
   public void handleGetStatus(Event event) {
