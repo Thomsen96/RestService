@@ -48,8 +48,8 @@ public class ServiceStatusSteps {
       e.printStackTrace();
     }
 
-    Event expectedEvent = new Event(eventTopic, new Object[] { sessionId });
-    Event actualEvent = messageQueue.getEvent(eventTopic);
+    Event expectedEvent = new Event(eventTopic + "." + sessionId, new Object[] { sessionId });
+    Event actualEvent = messageQueue.getEvent(eventTopic + "." + sessionId);
     
     assertEquals(expectedEvent, actualEvent );
   }

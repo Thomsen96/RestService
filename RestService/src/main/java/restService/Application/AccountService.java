@@ -17,7 +17,17 @@ public class AccountService {
 
   public String getStatus(String sessionId) {
     messageQueue.addHandler("AccountStatusResponse", this::handleGetStatus);
-    messageQueue.publish(new Event("AccountStatusRequest", new Object[] { sessionId }));
+    messageQueue.publish(new Event("AccountStatusRequest." + sessionId, new Object[] { sessionId }));
+    (new Thread() {
+      public void run() {
+        try {
+          Thread.sleep(5000);
+          getStatus.complete(new Event("", new Object[] { "No reply from a Account service" }));
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    }).start();
     return getStatus.join().getArgument(0, String.class);
   }
 

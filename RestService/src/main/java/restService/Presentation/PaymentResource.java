@@ -23,10 +23,9 @@ public class PaymentResource {
     }
 
     RabbitMqQueue queue = new RabbitMqQueue("localhost");
-    //CompletableFuture<Event> success = new CompletableFuture<>();
+    // CompletableFuture<Event> success = new CompletableFuture<>();
 
     ConcurrentHashMap<String, CompletableFuture<Event>> map = new ConcurrentHashMap<>();
-
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -62,7 +61,17 @@ public class PaymentResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response status() throws ExecutionException, InterruptedException {
         queue.publish(new Event("PaymentStatusRequest"));
-        queue.addHandler("PaymentStatusResponse", this::handlePaymentStatusResponse);
+        queue.addHandler("PaymentStatusResponse.*", this::handlePaymentStatusResponse);
+        (new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                    status.complete("No reply from a Payment service");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
         status.join();
         return Response.status(Response.Status.OK).entity(status.get()).build();
     }
@@ -70,8 +79,5 @@ public class PaymentResource {
     public void handlePaymentStatusResponse(Event event) {
         status.complete(event.getArgument(0, String.class));
     }
-
-
-
 
 }
