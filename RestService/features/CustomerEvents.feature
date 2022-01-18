@@ -14,12 +14,7 @@
 #		And the createCustomerResponses are received in reverse order
 #		Then two distinct CustomerCreationResponses are received
 				
-
-
-
-
-
-
+        
 
   #Scenario: Create a CustomerCreationRequest
     #Given a REST message with account number "0101010"

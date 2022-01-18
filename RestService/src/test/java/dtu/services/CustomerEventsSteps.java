@@ -132,4 +132,35 @@ public class CustomerEventsSteps {
 //	    assertNotEquals(customerId, customerId2);
 //	}
 	
+	@Given("another REST message with account number {string}")
+	public void anotherRESTMessageWithAccountNumber(String accountNumber) {
+		this.accountNumber2 = accountNumber;
+	}
+
+	@When("the two messages are sent at the same time")
+	public void theTwoMessagesAreSentAtTheSameTime() {
+		var thread1 = new Thread(() -> {
+			accountService.createCustomerCreationRequest(sessionId, accountNumber);
+		});
+		var thread2 = new Thread(() -> {
+			result2.complete(accountService.createCustomerCreationRequest(sessionId2, accountNumber2));
+		});
+		thread1.start();
+		thread2.start();
+	}
+	
+	@When("the requests are answered")
+	public void theRequestsAreAnswered() {
+		Event e = new Event(accountService.CUSTOMER_CREATION_RESPONSE, new Object[] {"71234781"});
+		accountService.customerCreationResponseHandler(sessionId, e);
+	}
+
+
+	@Then("two distinct CustomerCreationResponses are received")
+	public void twoDistinctCustomerCreationResponsesAreReceived() {
+	    assertNotNull(result);
+	    assertNotNull(result2);
+	    assertNotEquals(result, result2);
+	}
+	
 }
