@@ -1,6 +1,7 @@
 package restService.Presentation;
 
 import restService.Application.AccountService;
+import restService.Application.AccountService.Role;
 import restService.Application.TokenService;
 import restService.Domain.Token;
 import restService.Infrastructure.MessageQueueFactory;
@@ -33,7 +34,7 @@ public class CustomerResource  {
 	public Response create(String accountNumber) {
 		try {
 			return Response.status(Response.Status.OK)
-					.entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString())).build();			
+					.entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(), Role.CUSTOMER)).build();			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();	

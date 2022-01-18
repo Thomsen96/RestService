@@ -21,36 +21,46 @@ public class AccountService {
 //		public static final String CREATION_RESPONSE = "MerchantCreationResponse";	
 //	}
 	
-	public interface Account {
-		public static final String CREATION_REQUEST = "", CREATION_RESPONSE = "";
-	}
-
-	protected static final Account Customer = new Account() {
-		public static final String CREATION_REQUEST = "CustomerCreationRequest", CREATION_RESPONSE = "CustomerCreationResponse";	
-	};
-
-	protected static final Account Merchant = new Account() {
-		public static final String CREATION_REQUEST = "MerchantCreationRequest", CREATION_RESPONSE = "MerchantCreationResponse";	
-	};
-	
-	public static final HashMap<Role, Account> roleMessageQueue = new HashMap<Role, Account>(){{
-		put(Role.CUSTOMER, Customer);
-		put(Role.MERCHANT, Merchant);
-	}};
-	
-	
-	public static final String CUSTOMER_CREATION_REQUEST = "CustomerCreationRequest";
-	public static final String CUSTOMER_CREATION_RESPONSE = "CustomerCreationResponse";
-	
-	public static final String MERCHANT_CREATION_REQUEST = "MerchantCreationRequest";
-	public static final String MERCHANT_CREATION_RESPONSE = "MerchantCreationResponse";
-	
+//	public interface Account {
+//		public static final String CREATION_REQUEST = "", CREATION_RESPONSE = "";
+//	}
+//
+//	protected static final Account Customer = new Account() {
+//		public static final String CREATION_REQUEST = "CustomerCreationRequest", CREATION_RESPONSE = "CustomerCreationResponse";	
+//	};
+//
+//	protected static final Account Merchant = new Account() {
+//		public static final String CREATION_REQUEST = "MerchantCreationRequest", CREATION_RESPONSE = "MerchantCreationResponse";	
+//	};
+//	
+//	public static final HashMap<Role, Account> roleMessageQueue = new HashMap<Role, Account>(){{
+//		put(Role.CUSTOMER, Customer);
+//		put(Role.MERCHANT, Merchant);
+//	}};
+//	
+//	
+//	public static final String CUSTOMER_CREATION_REQUEST = "CustomerCreationRequest";
+//	public static final String CUSTOMER_CREATION_RESPONSE = "CustomerCreationResponse";
+//	
+//	public static final String MERCHANT_CREATION_REQUEST = "MerchantCreationRequest";
+//	public static final String MERCHANT_CREATION_RESPONSE = "MerchantCreationResponse";
+//	
 	
 	public static final String PAYMENT_REQUEST = "PaymentRequest";
 	
 	
 	public enum Role {
-		CUSTOMER, MERCHANT
+		CUSTOMER ("CustomerCreationRequest", "CustomerCreationResponse"), 
+		MERCHANT ("MerchantCreationRequest", "MerchantCreationResponse");
+
+		public final String CREATION_REQUEST;
+	    public final String CREATION_RESPONSE;
+
+	    private Role(String request, String respons) {
+	        this.CREATION_REQUEST = request;
+	        this.CREATION_RESPONSE = respons;
+	    }
+		
 	}
 
 	
@@ -85,34 +95,34 @@ public class AccountService {
 		AccountService.messageQueue = messageQueue;
 	}
 
-	public String createCustomerCreationRequest(String sessionId, String accountNumber) {
-
-		// Create a place for the response to reside
-		customerCreationPending.put(sessionId, new CompletableFuture<String>());
-
-		// Create the event and send it
-		Event event = new Event(CUSTOMER_CREATION_REQUEST, new Object[] { accountNumber, sessionId });
-		messageQueue.publish(event);
-
-		// Create a handler for the response
-		messageQueue.addHandler(CUSTOMER_CREATION_RESPONSE.concat(".").concat(sessionId), e -> {
-			customerCreationResponseHandler(sessionId, event);
-		});
-
-		// Create a timeout
-		(new Thread() {
-			public void run() {
-				try {
-					Thread.sleep(5000);
-					customerCreationPending.get(sessionId).complete(null);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
-
-		return customerCreationPending.get(sessionId).join();
-	}
+//	public String createCustomerCreationRequest(String sessionId, String accountNumber) {
+//
+//		// Create a place for the response to reside
+//		customerCreationPending.put(sessionId, new CompletableFuture<String>());
+//
+//		// Create the event and send it
+//		Event event = new Event(CUSTOMER_CREATION_REQUEST, new Object[] { accountNumber, sessionId });
+//		messageQueue.publish(event);
+//
+//		// Create a handler for the response
+//		messageQueue.addHandler(CUSTOMER_CREATION_RESPONSE.concat(".").concat(sessionId), e -> {
+//			customerCreationResponseHandler(sessionId, event);
+//		});
+//
+//		// Create a timeout
+//		(new Thread() {
+//			public void run() {
+//				try {
+//					Thread.sleep(5000);
+//					customerCreationPending.get(sessionId).complete(null);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}).start();
+//
+//		return customerCreationPending.get(sessionId).join();
+//	}
 
 
 	public String createCustomerCreationRequest(String sessionId, String accountNumber, Role role) {
@@ -122,14 +132,14 @@ public class AccountService {
 
 	    // Create the event and send it
 	    Event event = new Event(
-	    		roleMessageQueue.get(role).CREATION_REQUEST, 
+	    		role.CREATION_REQUEST, 
 	    		new Object[] { accountNumber, sessionId }
 	    );
 	    
 	    messageQueue.publish(event);
 
 	    // Create a handler for the response
-	    messageQueue.addHandler(roleMessageQueue.get(role).CREATION_RESPONSE.concat(".").concat(sessionId), e -> {
+	    messageQueue.addHandler(role.CREATION_RESPONSE.concat(".").concat(sessionId), e -> {
 	      customerCreationResponseHandler(sessionId, event);
 	    });
 

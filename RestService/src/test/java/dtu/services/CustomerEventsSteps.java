@@ -38,25 +38,27 @@ public class CustomerEventsSteps {
 	public void aNewCreateCustomerSessionHasStartedWithAccountId(String accountNumber) {
 		this.accountNumber = accountNumber;
 		this.sessionId = UUID.randomUUID().toString();
+		this.role = Role.CUSTOMER;
 	}
 
 	@Given("another new createCustomer session has started with accountId {string}")
 	public void anotherNewCreateCustomerSessionHasStartedWithAccountId(String accountId) {
 	    this.accountNumber2 = accountId;
 	    this.sessionId2 = UUID.randomUUID().toString();
+	    this.role = Role.CUSTOMER;
 	}
 	
 	@When("the message is sent")
 	public void theMessageIsSent() {
 		var thread = new Thread(() -> {
-			customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, Role.CUSTOMER);
+			customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
 		});
 		thread.start();
 	}
 	
 	@When("the createCustomerResponse is received")
 	public void theCreateCustomerResponseIsReceived() {
-		Event e = new Event(AccountService.CUSTOMER_CREATION_RESPONSE, new Object[] {UUID.randomUUID().toString()});
+		Event e = new Event(role.CREATION_RESPONSE, new Object[] {UUID.randomUUID().toString()});
 		accountService.customerCreationResponseHandler(sessionId, e);
 	}
 	
@@ -68,10 +70,10 @@ public class CustomerEventsSteps {
 	@When("the messages are sent at the same time")
 	public void theMessagesAreSentAtTheSameTime() {
 		var thread1 = new Thread(() -> {
-			customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, Role.CUSTOMER);
+			customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
 		});
 		var thread2 = new Thread(() -> {
-			customerId2 = accountService.createCustomerCreationRequest(sessionId2, accountNumber2, Role.CUSTOMER);
+			customerId2 = accountService.createCustomerCreationRequest(sessionId2, accountNumber2, role);
 		});
 		thread1.start();
 		thread2.start();
@@ -87,10 +89,10 @@ public class CustomerEventsSteps {
 	@When("the createCustomerResponses are received in reverse order")
 	public void theCreateCustomerResponsesAreReceivedInReverseOrder() {
 		accountService.customerCreationResponseHandler(sessionId2,
-				new Event(AccountService.CUSTOMER_CREATION_RESPONSE, new Object[] {UUID.randomUUID().toString()}));
+				new Event(role.CREATION_RESPONSE, new Object[] {UUID.randomUUID().toString()}));
 		
 		accountService.customerCreationResponseHandler(sessionId, 
-				new Event(AccountService.CUSTOMER_CREATION_RESPONSE, new Object[] {UUID.randomUUID().toString()}));
+				new Event(role.CREATION_RESPONSE, new Object[] {UUID.randomUUID().toString()}));
 	}
 	
 }
