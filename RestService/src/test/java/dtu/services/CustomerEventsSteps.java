@@ -116,8 +116,9 @@ public class CustomerEventsSteps {
 	}
 	
 	@When("the createCustomerResponses are received in reverse order")
-	public void theCreateCustomerResponsesAreReceivedInReverseOrder() {
+	public void theCreateCustomerResponsesAreReceivedInReverseOrder() throws InterruptedException {
 		//TODO: Creation of actual customers is not tested here?
+		Thread.sleep(50);
 		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId2, true, null, "123")));
 		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, "123")));
 	}
