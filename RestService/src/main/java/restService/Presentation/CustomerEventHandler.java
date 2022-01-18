@@ -1,8 +1,7 @@
 package restService.Presentation;
 
-import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import messaging.MessageQueue;
@@ -10,33 +9,60 @@ import messaging.Event;
 
 public class CustomerEventHandler {
 
-    private MessageQueue messageQueue;
+	public static final String CUSTOMER_CREATION_REQUEST = "CustomerCreationRequest";
+	public static final String CUSTOMER_CREATION_RESPONSE = "CustomerCreationResponse";
+	
+    private static MessageQueue messageQueue;
 
-    private HashMap<String, CompletableFuture<Event>> customerCreationPending;
+    public static HashMap<String, CompletableFuture<String>> customerCreationPending;
     
     public CustomerEventHandler(MessageQueue messageQueue) {
-        this.messageQueue = messageQueue;
+        CustomerEventHandler.messageQueue = messageQueue;
 
-        this.messageQueue.addHandler("CustomerCreationResponse", this::customerCreationResponse);
+        //this.messageQueue.addHandler("CustomerCreationResponse_old", this::customerCreationResponse);
     }
     
-    private String generateSessionId() {
-        byte[] array = new byte[16]; // length is bounded by 7
-        new Random().nextBytes(array);
-        return new String(array, Charset.forName("UTF-8"));
-    }
     
-    public String createCustomerCreationRequest(String accountNumber) {
-    	String sessionId = generateSessionId();
-    	Event event = new Event("CustomerCreationRequest", new Object[] { accountNumber, sessionId } );
+    public String createCustomerCreationRequest(String sessionId, String accountNumber) {
+
+    	// Create a place for the response to reside
+    	customerCreationPending.put(sessionId, new CompletableFuture<String>());
+    	
+    	// Create the event and send it
+    	Event event = new Event(CUSTOMER_CREATION_REQUEST, new Object[] { accountNumber, sessionId } );
     	messageQueue.publish(event);
-    	return sessionId;
+        
+    	// Create a handler for the response
+    	messageQueue.addHandler(CUSTOMER_CREATION_RESPONSE.concat(".").concat(sessionId), e -> {
+    		extracted(sessionId, event);
+    	});
+    	
+    	// Create a timeout
+        (new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                    customerCreationPending.get(sessionId).complete("Timed out");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        
+    	return customerCreationPending.get(sessionId).join();
     }
+
+
+	public void extracted(String sessionId, Event event) {
+		// Extract the customerId from response
+		String customerId = event.getArgument(0, String.class);
+		customerCreationPending.get(sessionId).complete(customerId);
+	}
     
-    public void customerCreationResponse(Event event) {
-    	String accountNumber = event.getArgument(0, String.class);
-        Event response = new Event("MerchantVerificationRequest", new Object[] {  } );
-        messageQueue.publish(response);
-    }
+//    public void customerCreationResponse(Event event) {
+//    	String accountNumber = event.getArgument(0, String.class);
+//        Event response = new Event("MerchantVerificationRequest", new Object[] {  } );
+//        messageQueue.publish(response);
+//    }
     
 }

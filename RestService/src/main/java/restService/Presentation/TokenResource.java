@@ -23,6 +23,7 @@ public class TokenResource {
 
     @GET
     @Path("/status")
+
     public Response get() {
         return Response.status(Response.Status.OK).entity(tokenService.getStatus(UUID.randomUUID().toString())).build();
     }

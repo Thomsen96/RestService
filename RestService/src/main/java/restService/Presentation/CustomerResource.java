@@ -24,10 +24,10 @@ public class CustomerResource  {
     
 	@POST
 	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response create(String accountNumber) {
-		
-		return Response.status(Response.Status.OK).entity(true).build();
+		return Response.status(Response.Status.OK)
+				.entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString())).build();
 //		try {
 //			service.createCustomer(CreationRequest.getAccountNumber());
 //		} catch (BankServiceException_Exception e) {
