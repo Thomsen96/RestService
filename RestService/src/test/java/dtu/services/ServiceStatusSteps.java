@@ -7,6 +7,7 @@ import restService.Application.TokenService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import io.cucumber.java.en.Then;
@@ -18,11 +19,13 @@ public class ServiceStatusSteps {
   private TokenService tokenService = new TokenService(messageQueue);
   private AccountService AccountService = new AccountService(messageQueue);
   private CompletableFuture<String> statusMessage = new CompletableFuture<>();
+  String sessionId;
 
   @When("the Token service is requested for its status")
   public void theTokenServiceIsRequestedForItsStatus() {
     new Thread(() -> {
-      String status = tokenService.getStatus();
+      sessionId = UUID.randomUUID().toString();
+      String status = tokenService.getStatus(sessionId);
       statusMessage.complete(status);
     }).start();
   }
@@ -30,31 +33,36 @@ public class ServiceStatusSteps {
   @When("the Account service is requested for its status")
   public void theAccountServiceIsRequestedForItsStatus() {
     new Thread(() -> {
-      String status = AccountService.getStatus();
+      sessionId = UUID.randomUUID().toString();
+      String status = AccountService.getStatus(sessionId);
       statusMessage.complete(status);
     }).start();
   }
 
   @Then("the event {string} have been sent")
   public void theEventHaveBeenSent(String eventTopic) {
-    Event event = new Event(eventTopic);
+
     try {
       Thread.sleep(50);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    assertEquals(event, messageQueue.getEvent(eventTopic));
+
+    Event expectedEvent = new Event(eventTopic, new Object[] { sessionId });
+    Event actualEvent = messageQueue.getEvent(eventTopic);
+    
+    assertEquals(expectedEvent, actualEvent );
   }
 
   @When("the Token service replies with the status message {string}")
   public void theTokenServiceRepliesWithTheStatusMessage(String statusMessage) {
-    Event event = new Event("TokenStatusResponse", new Object[] { statusMessage });
+    Event event = new Event("TokenStatusResponse." + sessionId, new Object[] { statusMessage });
     tokenService.handleGetStatus(event);
   }
 
   @When("the Account service replies with the status message {string}")
   public void theAccountServiceRepliesWithTheStatusMessage(String statusMessage) {
-    Event event = new Event("AccountStatusResponse", new Object[] { statusMessage });
+    Event event = new Event("AccountStatusResponse." + sessionId, new Object[] { statusMessage });
     AccountService.handleGetStatus(event);
   }
 

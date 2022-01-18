@@ -3,6 +3,8 @@ package restService.Presentation;
 import restService.Application.TokenService;
 import restService.Infrastructure.MessageQueueFactory;
 
+import java.util.UUID;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,6 +24,6 @@ public class TokenResource {
     @GET
     @Path("/status")
     public Response get() {
-        return Response.status(Response.Status.OK).entity(tokenService.getStatus()).build();
+        return Response.status(Response.Status.OK).entity(tokenService.getStatus(UUID.randomUUID().toString())).build();
     }
 }

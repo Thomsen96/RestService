@@ -15,9 +15,9 @@ public class AccountService {
     this.messageQueue = messageQueue;
   }
 
-  public String getStatus() {
+  public String getStatus(String sessionId) {
     messageQueue.addHandler("AccountStatusResponse", this::handleGetStatus);
-    messageQueue.publish(new Event("AccountStatusRequest", new Object[] { "" }));
+    messageQueue.publish(new Event("AccountStatusRequest", new Object[] { sessionId }));
     return getStatus.join().getArgument(0, String.class);
   }
 
