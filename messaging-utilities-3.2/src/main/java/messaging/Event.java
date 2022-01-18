@@ -1,6 +1,7 @@
 package messaging;
 
 import java.io.Serializable;
+import java.rmi.server.ObjID;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +16,7 @@ public class Event implements Serializable {
 	private Object[] arguments = null;
 	
 	public Event() {};
-	public Event(String topic, Object[] arguments) {
+	public Event(String topic, Object... arguments) {
 		this.type = topic;
 		this.arguments = arguments;
 	}
