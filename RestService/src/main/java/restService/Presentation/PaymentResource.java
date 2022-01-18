@@ -62,8 +62,9 @@ public class PaymentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response status() throws ExecutionException, InterruptedException {
-        queue.publish(new Event("PaymentStatusRequest"));
-        queue.addHandler("PaymentStatusResponse.*", this::handlePaymentStatusResponse);
+        String sid = UUID.randomUUID().toString();
+        queue.publish(new Event("PaymentStatusRequest", new Object[]{ new EventResponse(sid, true, null)}));
+        queue.addHandler("PaymentStatusResponse." + sid, this::handlePaymentStatusResponse);
         (new Thread() {
             public void run() {
                 try {
