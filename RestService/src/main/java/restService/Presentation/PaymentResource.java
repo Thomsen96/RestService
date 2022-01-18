@@ -63,24 +63,22 @@ public class PaymentResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response status() throws ExecutionException, InterruptedException {
         String sid = UUID.randomUUID().toString();
-        queue.publish(new Event("PaymentStatusRequest", new Object[]{ new EventResponse(sid, true, null)}));
+        queue.publish(new Event("PaymentStatusRequest", new EventResponse(sid, true, null)));
         queue.addHandler("PaymentStatusResponse." + sid, this::handlePaymentStatusResponse);
-        (new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    status.complete("No reply from a Payment service");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        (new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+                status.complete("No reply from a Payment service");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }).start();
+        })).start();
         status.join();
         return Response.status(Response.Status.OK).entity(status.get()).build();
     }
 
     public void handlePaymentStatusResponse(Event event) {
-        status.complete(event.getArgument(0, String.class));
+        status.complete(event.getArgument(0, EventResponse.class).getArgument(0, String.class));
     }
 
 }
