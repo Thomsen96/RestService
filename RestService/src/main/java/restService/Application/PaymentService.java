@@ -22,8 +22,7 @@ public class PaymentService {
 
     ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
 
-    public EventResponse createPayment(String sessionId, PaymentDTO dto)
-            throws InterruptedException, ExecutionException {
+    public EventResponse createPayment(String sessionId, PaymentDTO dto) throws InterruptedException, ExecutionException {
         sessions.put(sessionId, new CompletableFuture<>());
 
         messageQueue.addHandler("PaymentResponse" + "." + sessionId, this::handlePaymentResponse);
