@@ -43,22 +43,6 @@ public class PaymentService {
         sessions.get(sessionId).complete(event);
     }
     
-    public EventResponse getPaymentStatus(String sessionId) throws InterruptedException, ExecutionException {
-        messageQueue.publish(new Event("PaymentStatusRequest", new EventResponse(sessionId, true, null)));
-        messageQueue.addHandler("PaymentStatusResponse." + sessionId, this::handlePaymentStatusResponse);
-        
-        serviceHelper.addTimeOut2(sessionId, sessions.get(sessionId), "No reply from a Payment service");
-        
-        sessions.get(sessionId).join();
-        
-        return sessions.get(sessionId).get().getArgument(0, EventResponse.class);
-    }
-    
-    public void handlePaymentStatusResponse(Event event) {
-        String sessionId = event.getType().split("\\.")[1];
-        String a = event.getArgument(0, EventResponse.class).getArgument(0, String.class);
-        sessions.get(sessionId).complete(event);
-    }
 
     public String getStatus(String sessionId) throws Exception {
         messageQueue.addHandler("PaymentStatusResponse." + sessionId, this::handleResponse);
