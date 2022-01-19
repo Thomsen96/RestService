@@ -74,12 +74,8 @@ public class AccountService {
 		messageQueue.publish(event);
 
 		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "ERROR: Request timed out");
+		
 		return sessions.get(sessionId).join();
-//		if (sessions.get(sessionId).join().getArgument(0, EventResponse.class).isSuccess()) {
-//			return sessions.get(sessionId).get().getArgument(0, EventResponse.class).getArgument(0, String.class);
-//		}
-//
-//		return sessions.get(sessionId).get().getArgument(0, EventResponse.class).getErrorMessage();
 	}
 
 	public void customerCreationResponseHandler(Event event) {

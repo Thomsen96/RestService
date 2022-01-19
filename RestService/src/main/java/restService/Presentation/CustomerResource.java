@@ -27,8 +27,7 @@ public class CustomerResource {
 	public Response create(String accountNumber) {
 		try {
 			return Response.status(Response.Status.OK)
-					.entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(),
-							Role.CUSTOMER))
+					.entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(),Role.CUSTOMER))
 					.build();
 		} catch (Exception e) {
 			e.printStackTrace();
