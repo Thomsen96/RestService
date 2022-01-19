@@ -19,6 +19,7 @@ public class ServiceResource {
 	private ReportService reportService = new ReportService(new MessageQueueFactory().getMessageQueue());
 
 	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/rest")
 	public Response getRestServiceStatus() {
 		try {
@@ -29,6 +30,7 @@ public class ServiceResource {
 	}
 
 	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/token")
 	public Response getTokenServiceStatus() {
 		try {
@@ -40,6 +42,7 @@ public class ServiceResource {
 	}
 
 	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/payment")
 	public Response getPaymentServiceStatus() {
 
@@ -52,6 +55,7 @@ public class ServiceResource {
 	}
 
 	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/account")
 	public Response getAccountServiceStatus() {
 		try {
@@ -63,6 +67,7 @@ public class ServiceResource {
 	}
 
 	@GET
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/report")
 	public Response getReportServiceStatus() {
 		try {
