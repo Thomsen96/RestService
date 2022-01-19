@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                timeout(time: 50, unit: 'SECONDS') {
+                timeout(time: 69, unit: 'SECONDS') {
                     sh "chmod +x -R ${env.WORKSPACE}"
                     sh './completeBuild.sh'
                 }
