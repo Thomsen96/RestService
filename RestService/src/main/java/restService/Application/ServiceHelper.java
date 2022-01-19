@@ -14,7 +14,8 @@ public class ServiceHelper {
 			public void run() {
 				try {
 					Thread.sleep(TIMEOUT);
-					session.complete(new Event("", new EventResponse(sessionId, false, errorMessage)));
+					session.complete(new Event("",
+							new EventResponse(sessionId, false, errorMessage)));
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

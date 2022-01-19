@@ -50,15 +50,6 @@ public class PaymentService {
         
         serviceHelper.addTimeOut2(sessionId, sessions.get(sessionId), "No reply from a Payment service");
         
-//        (new Thread(() -> {
-//            try {
-//                Thread.sleep(5000);
-//                sessions.get(sessionId).complete("No reply from a Payment service");
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        })).start();
-        
         sessions.get(sessionId).join();
         
         return sessions.get(sessionId).get().getArgument(0, EventResponse.class);
