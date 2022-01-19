@@ -61,26 +61,6 @@ public class MerchantResource {
 
     }
 
-
-    @GET
-    @Path("/payments")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response status() throws ExecutionException, InterruptedException {
-    	try {
-    		EventResponse outcome = paymentService.getPaymentStatus(UUID.randomUUID().toString());
-    		
-            if (outcome.isSuccess()) {
-                return Response.status(Response.Status.OK).build();
-            } else {
-                return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
-            }
-    	} catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-    	}	
-    }
-
-
     @GET
     @Path("/reports/{merchantId}")
     public Response getReport(@PathParam("merchantId") String merchantId) {
