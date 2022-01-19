@@ -41,17 +41,26 @@ public class AccountService {
 //		// It's litterally the same, why does this fail?!		
 //		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Account service");
 		
-		(new Thread() {
-			public void run() {
-				try {
-					Thread.sleep(5000);
-					sessions.get(sessionId).complete(new Event("", 
-							new EventResponse(sessionId, false, "No reply from a Account service")));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+		new Thread(() -> {
+			try {
+				Thread.sleep(5000);
+				sessions.get(sessionId).complete(new Event("", 
+						new EventResponse(sessionId, false, "No reply from a Account service")));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-		}).start();
+		}).start();;
+//		(new Thread() {
+//			public void run() {
+//				try {
+//					Thread.sleep(5000);
+//					sessions.get(sessionId).complete(new Event("", 
+//							new EventResponse(sessionId, false, "No reply from a Account service")));
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}).start();
 
 		EventResponse eventResponse = sessions.get(sessionId).join().getArgument(0, EventResponse.class);
 
