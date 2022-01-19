@@ -28,6 +28,12 @@ public class ServiceResource {
 
 	@GET
 	@Path("/token")
+	public Response getRestServiceStatus() {
+		return Response.status(Response.Status.OK).entity("Rest service ready").build();
+	}
+
+	@GET
+	@Path("/token")
 	public Response getTokenServiceStatus() {
 		try {
 			String status = tokenService.getStatus(UUID.randomUUID().toString());
