@@ -3,21 +3,13 @@ package restService.Presentation;
 import restService.Application.AccountService;
 import restService.Application.PaymentService;
 import restService.Application.ReportService;
-import restService.Application.AccountService.Role;
 import restService.Application.TokenService;
-import restService.Domain.Token;
 import restService.Infrastructure.MessageQueueFactory;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import messaging.EventResponse;
-import messaging.MessageQueue;
-
 @Path("/services")
 public class ServiceResource {
 
