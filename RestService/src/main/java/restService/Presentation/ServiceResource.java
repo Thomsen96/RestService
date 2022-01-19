@@ -30,7 +30,7 @@ public class ServiceResource {
 	@Path("/token")
 	public Response getTokenServiceStatus() {
 		try {
-			String status =tokenService.getStatus(UUID.randomUUID().toString());
+			String status = tokenService.getStatus(UUID.randomUUID().toString());
 			return Response.status(Response.Status.OK).entity(status).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getMessage()).build();

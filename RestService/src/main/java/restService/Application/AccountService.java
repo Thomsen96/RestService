@@ -42,8 +42,8 @@ public class AccountService {
 			public void run() {
 				try {
 					Thread.sleep(5000);
-					sessions.get(sessionId).complete(new Event("",
-							new EventResponse(sessionId, false, null, "No reply from a Account service")));
+					EventResponse eventResponse = new EventResponse(sessionId, false, "No reply from a Account service");
+					sessions.get(sessionId).complete(new Event("", eventResponse));
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -52,10 +52,10 @@ public class AccountService {
 
 		EventResponse eventResponse = sessions.get(sessionId).join().getArgument(0, EventResponse.class);
 
-        if (eventResponse.isSuccess()) {
-            return eventResponse.getArgument(0, String.class);
-        }
-        throw new Exception(eventResponse.getErrorMessage());
+		if (eventResponse.isSuccess()) {
+			return eventResponse.getArgument(0, String.class);
+		}
+		throw new Exception(eventResponse.getErrorMessage());
 	}
 
 	public void handleGetStatus(Event event) {
