@@ -50,6 +50,12 @@ public class EventResponse {
     }
 
     @Override
+	public String toString() {
+		return "EventResponse [sessionId=" + sessionId + ", success=" + success + ", errorMessage=" + errorMessage
+				+ ", arguments=" + Arrays.toString(arguments) + "]";
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

@@ -135,7 +135,7 @@ public class CustomerEventsSteps {
 		EventResponse eventResponse2 = new EventResponse(sessionId2, true, null, "321");
 		Event event2 = new Event(role.CREATION_RESPONSE + "." + sessionId2, eventResponse2);
 		
-		Thread.sleep(50);
+		Thread.sleep(200);
 		accountService.customerCreationResponseHandler(event1);
 		accountService.customerCreationResponseHandler(event2);
 	}
