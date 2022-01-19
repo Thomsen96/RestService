@@ -1,6 +1,5 @@
 package restService.Application;
 
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -15,8 +14,6 @@ public class AccountService {
 		AccountService.messageQueue = messageQueue;
 	}
 	
-	public static final String PAYMENT_REQUEST = "PaymentRequest";
-
 	public enum Role {
 		CUSTOMER("CustomerCreationRequest", "CustomerCreationResponse"),
 		MERCHANT("MerchantCreationRequest", "MerchantCreationResponse");
@@ -29,20 +26,6 @@ public class AccountService {
 			this.CREATION_RESPONSE = respons;
 		}
 	}
-	
-	
-//	private void addTimeOut(String sessionId) {
-//		(new Thread() {
-//			public void run() {
-//				try {
-//					Thread.sleep(TIMEOUT);
-//					sessions.get(sessionId).complete(new Event("", new EventResponse(sessionId, false, "ERROR: Request timed out")));
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}).start();
-//	}
 
 
 	private static MessageQueue messageQueue;

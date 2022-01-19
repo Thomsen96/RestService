@@ -22,4 +22,17 @@ public class ServiceHelper {
 		}).start();
 	}
 	
+	public void addTimeOut2(String sessionId, CompletableFuture<Event> session, String errorMessage) {
+		(new Thread() {
+			public void run() {
+				try {
+					Thread.sleep(TIMEOUT);
+					session.complete(new Event("", new EventResponse(sessionId, false, null, "No reply from a Account service")));
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+	
 }
