@@ -21,9 +21,11 @@ public class CustomerEventsSteps {
 	
 	ServiceHelper serviceHelper = new ServiceHelper();
 	AccountService accountService = new AccountService(messageQueue);
-	
+
 	CompletableFuture<String> result = new CompletableFuture<String>();
 	CompletableFuture<String> result2 = new CompletableFuture<String>();
+	CompletableFuture<Event> customerCreationFuture1 = new CompletableFuture<>();
+	CompletableFuture<Event> customerCreationFuture2 = new CompletableFuture<>();
 	CompletableFuture<Boolean> customerIdComplete = new CompletableFuture<>();
 	
 	
@@ -71,7 +73,9 @@ public class CustomerEventsSteps {
 	public void theMessageIsSent() {
 		var thread = new Thread(() -> {
 			try {
-				this.customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+				Event event = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+				EventResponse eventResponse = event.getArgument(0, EventResponse.class);
+				this.customerId = eventResponse.isSuccess() ? eventResponse.getArgument(0, String.class) : eventResponse.getErrorMessage();
 				customerIdComplete.complete(true);
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
@@ -82,30 +86,40 @@ public class CustomerEventsSteps {
 	
 	@When("the createCustomerResponse is received")
 	public void theCreateCustomerResponseIsReceived() throws InterruptedException {
-		Thread.sleep(50);
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, "123");
-		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, eventResponse));
+		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE + "." + sessionId, eventResponse));
 	}
 	
 	@Then("a new customer has been created with a customerId")
 	public void aNewCustomerHasBeenCreatedWithACustomerId() throws InterruptedException {
-//		Thread.sleep(300);
 		customerIdComplete.join();
 	    assertNotNull(this.customerId);
 	}
+
+	
+	
+	
 
 	@When("the messages are sent at the same time")
 	public void theMessagesAreSentAtTheSameTime() {
 		var thread1 = new Thread(() -> {
 			try {
-				this.customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+				Event event1 = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+				System.out.println("Event1: " + event1);
+				EventResponse eventResponse1 = event1.getArgument(0, EventResponse.class);
+				this.customerId = eventResponse1.isSuccess() ? eventResponse1.getArgument(0, String.class) : eventResponse1.getErrorMessage();
+				customerCreationFuture1.complete(event1);
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
 		});
 		var thread2 = new Thread(() -> {
-			try {
-				this.customerId2 = accountService.createCustomerCreationRequest(sessionId2, accountNumber2, role);
+			try {	
+				Event event2 = accountService.createCustomerCreationRequest(sessionId2, accountNumber2, role);
+				System.out.println("Event2: " + event2);
+				EventResponse eventResponse2 = event2.getArgument(0, EventResponse.class);
+				this.customerId2 = eventResponse2.isSuccess() ? eventResponse2.getArgument(0, String.class) : eventResponse2.getErrorMessage();
+				customerCreationFuture2.complete(event2);
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
@@ -113,20 +127,35 @@ public class CustomerEventsSteps {
 		thread1.start();
 		thread2.start();
 	}
-
-	@Then("two distinct CustomerCreationResponses are received")
-	public void twoDistinctCustomerCreationResponsesAreReceived() {
-	    assertNotNull(this.result);
-	    assertNotNull(this.result2);
-	    assertNotEquals(this.result, this.result2);
-	}
 	
 	@When("the createCustomerResponses are received in reverse order")
 	public void theCreateCustomerResponsesAreReceivedInReverseOrder() throws InterruptedException {
-		//TODO: Creation of actual customers is not tested here?
+		EventResponse eventResponse1 = new EventResponse(sessionId, true, null, "123");
+		Event event1 = new Event(role.CREATION_RESPONSE + "." + sessionId, eventResponse1);
+		EventResponse eventResponse2 = new EventResponse(sessionId2, true, null, "321");
+		Event event2 = new Event(role.CREATION_RESPONSE + "." + sessionId2, eventResponse2);
+		
 		Thread.sleep(50);
-		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId2, true, null, "123")));
-		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, "123")));
+		accountService.customerCreationResponseHandler(event1);
+		accountService.customerCreationResponseHandler(event2);
+	}
+
+	@Then("two distinct CustomerCreationResponses are received")
+	public void twoDistinctCustomerCreationResponsesAreReceived() {
+		Event incommingEvent1 = customerCreationFuture1.join();
+		Event incommingEvent2 = customerCreationFuture2.join();
+		assertNotEquals(incommingEvent1, incommingEvent2);
+		
+		EventResponse eventResponse1 = incommingEvent1.getArgument(0, EventResponse.class);
+		EventResponse eventResponse2 = incommingEvent2.getArgument(0, EventResponse.class);
+
+	    System.out.println("eventResponse1: " + eventResponse1);
+	    System.out.println("eventResponse2: " + eventResponse2);
+		assertNotEquals(eventResponse1, eventResponse2);
+		
+	    assertNotNull(this.result);
+	    assertNotNull(this.result2);
+	    assertNotEquals(this.result, this.result2);
 	}
 	
 	@Given("the timeout is {int} ms")
@@ -137,7 +166,6 @@ public class CustomerEventsSteps {
 	@When("not answered")
 	public void notAnswered() throws InterruptedException {
 		customerIdComplete.join();
-//		Thread.sleep(serviceHelper.TIMEOUT*5);
 	}
 
 	@Then("a timeout message is received")

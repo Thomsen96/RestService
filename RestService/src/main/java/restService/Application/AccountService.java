@@ -63,7 +63,7 @@ public class AccountService {
 		sessions.get(sessionId).complete(event);
 	}
 
-	public String createCustomerCreationRequest(String sessionId, String accountNumber, Role role)
+	public Event createCustomerCreationRequest(String sessionId, String accountNumber, Role role)
 			throws InterruptedException, ExecutionException {
 
 		sessions.put(sessionId, new CompletableFuture<Event>());
@@ -74,12 +74,12 @@ public class AccountService {
 		messageQueue.publish(event);
 
 		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "ERROR: Request timed out");
-
-		if (sessions.get(sessionId).join().getArgument(0, EventResponse.class).isSuccess()) {
-			return sessions.get(sessionId).get().getArgument(0, EventResponse.class).getArgument(0, String.class);
-		}
-
-		return sessions.get(sessionId).get().getArgument(0, EventResponse.class).getErrorMessage();
+		return sessions.get(sessionId).join();
+//		if (sessions.get(sessionId).join().getArgument(0, EventResponse.class).isSuccess()) {
+//			return sessions.get(sessionId).get().getArgument(0, EventResponse.class).getArgument(0, String.class);
+//		}
+//
+//		return sessions.get(sessionId).get().getArgument(0, EventResponse.class).getErrorMessage();
 	}
 
 	public void customerCreationResponseHandler(Event event) {
