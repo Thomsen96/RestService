@@ -45,9 +45,9 @@ public class CustomerResource {
 
 	// POST : /customers/tokens -> return HashSet<Token>
 	public static class CustomerTokensDTO {
-		public String customerId, numberOfTokens;
+		public String customerId;
+		public Integer numberOfTokens;
 	}
-
 	@POST
 	@Path("/tokens")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -55,20 +55,12 @@ public class CustomerResource {
 	public Response token(CustomerTokensDTO data) {
 
 		HashSet<Token> tokens = new HashSet<Token>();
-		tokens.add(new Token(data.customerId, data.numberOfTokens, true));
-
-		int numberOfTokens;
-		try {
-			numberOfTokens = Integer.parseInt(data.numberOfTokens);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
+		tokens.add(new Token(data.customerId, data.numberOfTokens.toString(), true));
 
 		try {
 			return Response.status(Response.Status.OK)
 					.entity(tokenService
-							.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, numberOfTokens)
+							.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, data.numberOfTokens)
 							.getArgument(0, EventResponse.class).getArgument(0, Token[].class))
 					.build();
 		} catch (Exception e) {
@@ -85,5 +77,11 @@ public class CustomerResource {
 				.entity(String.format("Report requested for %s", customerId))
 				.build();
 	}
+	
+    @GET
+    @Path("/tokens/status")
+    public Response getTokenStatus() {
+        return Response.status(Response.Status.OK).entity(tokenService.getStatus(UUID.randomUUID().toString())).build();
+    }
 
 }

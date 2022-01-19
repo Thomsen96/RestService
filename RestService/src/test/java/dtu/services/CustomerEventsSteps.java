@@ -123,4 +123,19 @@ public class CustomerEventsSteps {
 		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, "123")));
 	}
 	
+	@Given("the timeout is {int} ms")
+	public void theTimeoutIsMs(Integer newTimeout) {
+	    AccountService.TIMEOUT = newTimeout;
+	}
+	
+	@When("not answered")
+	public void notAnswered() throws InterruptedException {
+		Thread.sleep(accountService.TIMEOUT*2);
+	}
+
+	@Then("a timeout message is received")
+	public void aTimeoutMessageIsReceived() {
+	    assertEquals("ERROR: Request timed out", customerId);
+	}
+	
 }

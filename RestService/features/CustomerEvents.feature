@@ -13,7 +13,14 @@ Feature: Customer endpoint
 		When the messages are sent at the same time
 		And the createCustomerResponses are received in reverse order
 		Then two distinct CustomerCreationResponses are received
-				
+		
+  Scenario: CustomerCreationRequest times out
+		Given a new createCustomer session has started with accountId "00001"
+		And the timeout is 10 ms
+		When the message is sent
+		And not answered
+		Then a timeout message is received
+
 # Creating merchants
   Scenario: MerchantCreationRequest
 		Given a new createMerchant session has started with accountId "00001"
