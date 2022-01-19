@@ -28,8 +28,10 @@ public class MerchantResource {
     @Produces(MediaType.TEXT_PLAIN)
     public Response create(String accountNumber) {
         try {
+            var e = accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(), Role.MERCHANT);
+            var id = e.getArgument(0, EventResponse.class).getArgument(0, String.class);
             return Response.status(Response.Status.OK)
-                    .entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(), Role.MERCHANT))
+                    .entity(id)
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
