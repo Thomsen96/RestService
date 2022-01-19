@@ -48,6 +48,7 @@ public class CustomerResource {
 		public String customerId;
 		public Integer numberOfTokens;
 	}
+
 	@POST
 	@Path("/tokens")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -68,7 +69,7 @@ public class CustomerResource {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 	}
-	
+
 	@GET
 	@Path("/reports/{customerId}")
 	public Response getReport(@PathParam("customerId") String customerId) {
@@ -77,11 +78,11 @@ public class CustomerResource {
 				.entity(String.format("Report requested for %s", customerId))
 				.build();
 	}
-	
-    @GET
-    @Path("/tokens/status")
-    public Response getTokenStatus() {
-        return Response.status(Response.Status.OK).entity(tokenService.getStatus(UUID.randomUUID().toString())).build();
-    }
+
+	@GET
+	@Path("/tokens/status")
+	public Response getTokenStatus() {
+		return Response.status(Response.Status.OK).entity(tokenService.getStatus(UUID.randomUUID().toString())).build();
+	}
 
 }
