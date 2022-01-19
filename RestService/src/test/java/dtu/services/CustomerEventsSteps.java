@@ -13,11 +13,13 @@ import messaging.EventResponse;
 import messaging.MessageQueue;
 import restService.Application.AccountService;
 import restService.Application.AccountService.Role;
+import restService.Application.ServiceHelper;
 
 public class CustomerEventsSteps {
 
 	static MessageQueue messageQueue = mock(MessageQueue.class);
 	
+	ServiceHelper serviceHelper = new ServiceHelper();
 	AccountService accountService = new AccountService(messageQueue);
 	
 	CompletableFuture<String> result = new CompletableFuture<String>();
@@ -125,12 +127,12 @@ public class CustomerEventsSteps {
 	
 	@Given("the timeout is {int} ms")
 	public void theTimeoutIsMs(Integer newTimeout) {
-	    AccountService.TIMEOUT = newTimeout;
+	    serviceHelper.TIMEOUT = newTimeout;
 	}
 	
 	@When("not answered")
 	public void notAnswered() throws InterruptedException {
-		Thread.sleep(accountService.TIMEOUT*2);
+		Thread.sleep(serviceHelper.TIMEOUT*2);
 	}
 
 	@Then("a timeout message is received")

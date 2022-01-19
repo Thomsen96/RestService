@@ -11,8 +11,10 @@ import messaging.MessageQueue;
 
 public class AccountService {
 
-	public static int TIMEOUT = 5000;
-
+	public AccountService(MessageQueue messageQueue) {
+		AccountService.messageQueue = messageQueue;
+	}
+	
 	public static final String PAYMENT_REQUEST = "PaymentRequest";
 
 	public enum Role {
@@ -29,50 +31,52 @@ public class AccountService {
 	}
 	
 	
-	private void addTimeOut(String sessionId) {
-		(new Thread() {
-			public void run() {
-				try {
-					Thread.sleep(TIMEOUT);
-					sessions.get(sessionId).complete(new Event("", new EventResponse(sessionId, false, "ERROR: Request timed out")));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
-	}
-
-
-	private static MessageQueue messageQueue;
-
-	private ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
-
-	public String getStatus(String sessionId) {
-		messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
-		sessions.put(sessionId, new CompletableFuture<Event>());
-		messageQueue.publish(new Event("AccountStatusRequest", new Object[] { sessionId }));
+//	private void addTimeOut(String sessionId) {
 //		(new Thread() {
 //			public void run() {
 //				try {
-//					Thread.sleep(5000);
-//					sessions.get(sessionId).complete(new Event("", new EventResponse(sessionId, false, null, "No reply from a Account service")));
+//					Thread.sleep(TIMEOUT);
+//					sessions.get(sessionId).complete(new Event("", new EventResponse(sessionId, false, "ERROR: Request timed out")));
 //				} catch (InterruptedException e) {
 //					e.printStackTrace();
 //				}
 //			}
 //		}).start();
-		addTimeOut(sessionId);
+//	}
+
+
+	private static MessageQueue messageQueue;
+	ServiceHelper serviceHelper = new ServiceHelper();
+	
+	private ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
+
+	public String getStatus(String sessionId) {
+
+		sessions.put(sessionId, new CompletableFuture<Event>());
 		
+		messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
+		messageQueue.publish(new Event("AccountStatusRequest", new Object[] { sessionId }));
+		
+		
+		(new Thread() {
+		public void run() {
+			try {
+				Thread.sleep(5000);
+				sessions.get(sessionId).complete(new Event("", new EventResponse(sessionId, false, null, "No reply from a Account service")));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		}).start();
+//		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId));
+		
+//		return sessions.get(sessionId).join().getArgument(0, EventResponse.class).getErrorMessage();
 		return sessions.get(sessionId).join().getArgument(0, EventResponse.class).getArgument(0, String.class);
 	}
 
 	public void handleGetStatus(Event event) {
 		String sessionId = event.getArgument(0, EventResponse.class).getSessionId();
 		sessions.get(sessionId).complete(event);
-	}
-
-	public AccountService(MessageQueue messageQueue) {
-		AccountService.messageQueue = messageQueue;
 	}
 
 	public String createCustomerCreationRequest(String sessionId, String accountNumber, Role role) throws InterruptedException, ExecutionException {
@@ -83,8 +87,8 @@ public class AccountService {
 
 		messageQueue.addHandler(role.CREATION_RESPONSE + "."+  sessionId, this::customerCreationResponseHandler);
 		messageQueue.publish(event);
-
-		addTimeOut(sessionId);
+		
+		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "ERROR: Request timed out");
 
 		if(sessions.get(sessionId).join().getArgument(0, EventResponse.class).isSuccess()) {
 			return sessions.get(sessionId).get().getArgument(0, EventResponse.class).getArgument(0, String.class);
