@@ -24,6 +24,7 @@ public class CustomerEventsSteps {
 	
 	CompletableFuture<String> result = new CompletableFuture<String>();
 	CompletableFuture<String> result2 = new CompletableFuture<String>();
+	CompletableFuture<Boolean> customerIdComplete = new CompletableFuture<>();
 	
 	
 	String accountNumber;
@@ -71,6 +72,7 @@ public class CustomerEventsSteps {
 		var thread = new Thread(() -> {
 			try {
 				this.customerId = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+				customerIdComplete.complete(true);
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
@@ -81,12 +83,14 @@ public class CustomerEventsSteps {
 	@When("the createCustomerResponse is received")
 	public void theCreateCustomerResponseIsReceived() throws InterruptedException {
 		Thread.sleep(50);
-		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, new EventResponse(sessionId, true, null, "123")));
+		EventResponse eventResponse = new EventResponse(sessionId, true, null, "123");
+		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE, eventResponse));
 	}
 	
 	@Then("a new customer has been created with a customerId")
 	public void aNewCustomerHasBeenCreatedWithACustomerId() throws InterruptedException {
-		Thread.sleep(300);
+//		Thread.sleep(300);
+		customerIdComplete.join();
 	    assertNotNull(this.customerId);
 	}
 
@@ -132,7 +136,8 @@ public class CustomerEventsSteps {
 	
 	@When("not answered")
 	public void notAnswered() throws InterruptedException {
-		Thread.sleep(serviceHelper.TIMEOUT*2);
+		customerIdComplete.join();
+//		Thread.sleep(serviceHelper.TIMEOUT*5);
 	}
 
 	@Then("a timeout message is received")
