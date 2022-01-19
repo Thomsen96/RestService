@@ -1,12 +1,12 @@
 package restService.Presentation;
 
 import restService.Application.AccountService;
+import restService.Application.ReportService;
 import restService.Application.AccountService.Role;
 import restService.Application.TokenService;
 import restService.Domain.Token;
 import restService.Infrastructure.MessageQueueFactory;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 import javax.ws.rs.*;
@@ -20,6 +20,7 @@ public class CustomerResource {
 
 	AccountService accountService = new AccountService(new MessageQueueFactory().getMessageQueue());
 	private TokenService tokenService = new TokenService(new MessageQueueFactory().getMessageQueue());
+	ReportService reportService = new ReportService();
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -46,10 +47,6 @@ public class CustomerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response token(CustomerTokensDTO data) {
-
-		HashSet<Token> tokens = new HashSet<Token>();
-		tokens.add(new Token(data.customerId, data.numberOfTokens.toString(), true));
-
 		try {
 			return Response.status(Response.Status.OK)
 					.entity(tokenService
@@ -65,10 +62,18 @@ public class CustomerResource {
 	@GET
 	@Path("/reports/{customerId}")
 	public Response getReport(@PathParam("customerId") String customerId) {
-		return Response
-				.status(Response.Status.OK)
-				.entity(String.format("Report requested for %s", customerId))
-				.build();
+    	try {
+    		EventResponse outcome = reportService.getMerchantReport(UUID.randomUUID().toString(), customerId, ReportService.Role.CUSTOMER);
+    		
+            if (outcome.isSuccess()) {
+                return Response.status(Response.Status.OK).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
+            }
+    	} catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    	}	
 	}
 
 }

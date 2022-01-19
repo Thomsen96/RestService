@@ -21,7 +21,11 @@ public class ServiceResource {
 	@GET
 	@Path("/rest")
 	public Response getRestServiceStatus() {
-		return Response.status(Response.Status.OK).entity("Rest service ready").build();
+		try {
+			return Response.status(Response.Status.OK).entity("Rest service ready").build();			
+		} catch (Exception e) {
+			return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getMessage()).build();
+		}
 	}
 
 	@GET
