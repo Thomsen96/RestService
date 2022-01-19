@@ -20,7 +20,7 @@ public class PaymentsResource {
     @Path("/status")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPaymentServiceStatus() {
+    public Response getPaymentServiceStatus() throws Exception {
         return Response.status(Response.Status.OK).entity(paymentService.getStatus(UUID.randomUUID().toString())).build();
     }
 
