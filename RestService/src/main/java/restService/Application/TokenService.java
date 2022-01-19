@@ -24,7 +24,7 @@ public class TokenService {
         messageQueue.addHandler("TokenStatusResponse." + sessionId, this::handleResponse);
         sessions.put(sessionId, new CompletableFuture<Event>());
         messageQueue.publish(new Event("TokenStatusRequest", new Object[] { sessionId }));
-        
+
         (new Thread() {
             public void run() {
                 try {
@@ -41,24 +41,21 @@ public class TokenService {
         return eventResponse.getArgument(0, String.class);
     }
 
-    
-    
     public Event getTokensMessageService(String sessionId, String customerId, int numOfTokens) {
         sessions.put(sessionId, new CompletableFuture<Event>());
         Event event = new Event("TokenCreationRequest", customerId, numOfTokens, sessionId);
         messageQueue.addHandler("TokenCreationResponse." + sessionId, this::handleResponse);
         messageQueue.publish(event);
-        
+
         // TODO: Add timeout handling
-        
+
         return sessions.get(sessionId).join();
     }
 
     private EventResponse getResponse(String sessionId) {
         return sessions.get(sessionId).join().getArgument(0, EventResponse.class);
     }
-    
-    
+
     public void handleResponse(Event event) {
         EventResponse eventResponse = event.getArgument(0, EventResponse.class);
         sessions.get(eventResponse.getSessionId()).complete(event);
