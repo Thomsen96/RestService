@@ -27,7 +27,7 @@ public class ServiceResource {
 	private ReportService reportService = new ReportService(new MessageQueueFactory().getMessageQueue());
 
 	@GET
-	@Path("/token")
+	@Path("/rest")
 	public Response getRestServiceStatus() {
 		return Response.status(Response.Status.OK).entity("Rest service ready").build();
 	}
