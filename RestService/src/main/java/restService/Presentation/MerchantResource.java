@@ -26,7 +26,7 @@ public class MerchantResource {
     public Response create(String accountNumber) {
         try {
             return Response.status(Response.Status.OK)
-                    .entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(), Role.MERCHANT))
+                    .entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(), Role.MERCHANT).getArgument(0, EventResponse.class))
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
