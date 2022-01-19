@@ -7,17 +7,12 @@ import restService.Domain.PaymentDTO;
 import restService.Infrastructure.MessageQueueFactory;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import messaging.Event;
 import messaging.EventResponse;
-import messaging.implementations.RabbitMqQueue;
 
 @Path("/merchants")
 public class MerchantResource {
