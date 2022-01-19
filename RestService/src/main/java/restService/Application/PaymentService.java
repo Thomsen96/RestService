@@ -28,8 +28,7 @@ public class PaymentService {
         sessions.put(sessionId, new CompletableFuture<>());
 
         messageQueue.addHandler("PaymentResponse" + "." + sessionId, this::handlePaymentResponse);
-        messageQueue
-                .publish(new Event("PaymentRequest", new Object[] { new EventResponse(sessionId, true, null, dto) }));
+        messageQueue.publish(new Event("PaymentRequest", new EventResponse(sessionId, true, null, dto)));
 
         ServiceHelper serviceHelper = new ServiceHelper();
         serviceHelper.addTimeOut2(sessionId, sessions.get(sessionId), "Payment timed out");
