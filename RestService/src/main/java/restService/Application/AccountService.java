@@ -34,9 +34,8 @@ public class AccountService {
 
 	public String getStatus(String sessionId) {
 
-		sessions.put(sessionId, new CompletableFuture<Event>());
-
 		messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
+		sessions.put(sessionId, new CompletableFuture<Event>());
 		messageQueue.publish(new Event("AccountStatusRequest", new Object[] { sessionId }));
 
 		(new Thread() {
@@ -50,11 +49,13 @@ public class AccountService {
 				}
 			}
 		}).start();
-		// serviceHelper.addTimeOut(sessionId, sessions.get(sessionId));
 
-		// return sessions.get(sessionId).join().getArgument(0,
-		// EventResponse.class).getErrorMessage();
-		return sessions.get(sessionId).join().getArgument(0, EventResponse.class).getArgument(0, String.class);
+		EventResponse eventResponse = sessions.get(sessionId).join().getArgument(0, EventResponse.class);
+
+        if (eventResponse.isSuccess()) {
+            return eventResponse.getArgument(0, String.class);
+        }
+        return eventResponse.getErrorMessage();
 	}
 
 	public void handleGetStatus(Event event) {

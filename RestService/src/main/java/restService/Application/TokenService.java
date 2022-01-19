@@ -36,9 +36,13 @@ public class TokenService {
                 }
             }
         }).start();
-        EventResponse eventResponse = getResponse(sessionId);
 
-        return eventResponse.getArgument(0, String.class);
+        EventResponse eventResponse = sessions.get(sessionId).join().getArgument(0, EventResponse.class);
+
+        if (eventResponse.isSuccess()) {
+            return eventResponse.getArgument(0, String.class);
+        }
+        return eventResponse.getErrorMessage();
     }
 
     public Event getTokensMessageService(String sessionId, String customerId, int numOfTokens) {
@@ -50,10 +54,6 @@ public class TokenService {
         // TODO: Add timeout handling
 
         return sessions.get(sessionId).join();
-    }
-
-    private EventResponse getResponse(String sessionId) {
-        return sessions.get(sessionId).join().getArgument(0, EventResponse.class);
     }
 
     public void handleResponse(Event event) {
