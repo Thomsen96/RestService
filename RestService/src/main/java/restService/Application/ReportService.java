@@ -17,7 +17,7 @@ public class ReportService {
         this.messageQueue = messageQueue;
     }
 
-    public String getStatus(String sessionId) {
+    public String getStatus(String sessionId) throws Exception {
         messageQueue.addHandler("ReportStatusResponse." + sessionId, this::handleResponse);
         sessions.put(sessionId, new CompletableFuture<Event>());
         messageQueue.publish(new Event("ReportStatusRequest", new Object[] { sessionId }));
@@ -38,7 +38,7 @@ public class ReportService {
         if (eventResponse.isSuccess()) {
             return eventResponse.getArgument(0, String.class);
         }
-        return eventResponse.getErrorMessage();
+        throw new Exception(eventResponse.getErrorMessage());
     }
     
     public void handleResponse(Event event) {

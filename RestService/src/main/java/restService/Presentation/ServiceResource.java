@@ -26,33 +26,49 @@ public class ServiceResource {
 	private AccountService accountService = new AccountService(new MessageQueueFactory().getMessageQueue());
 	private ReportService reportService = new ReportService(new MessageQueueFactory().getMessageQueue());
 
-
 	@GET
 	@Path("/token")
 	public Response getTokenServiceStatus() {
-		return Response.status(Response.Status.OK).entity(tokenService.getStatus(UUID.randomUUID().toString()))
-				.build();
+		try {
+			String status =tokenService.getStatus(UUID.randomUUID().toString());
+			return Response.status(Response.Status.OK).entity(status).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getMessage()).build();
+		}
 	}
 
 	@GET
 	@Path("/payment")
 	public Response getPaymentServiceStatus() {
-		return Response.status(Response.Status.OK).entity(paymentService.getStatus(UUID.randomUUID().toString()))
-				.build();
+
+		try {
+			String status = paymentService.getStatus(UUID.randomUUID().toString());
+			return Response.status(Response.Status.OK).entity(status).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getMessage()).build();
+		}
 	}
 
 	@GET
 	@Path("/account")
 	public Response getAccountServiceStatus() {
-		return Response.status(Response.Status.OK).entity(accountService.getStatus(UUID.randomUUID().toString()))
-				.build();
+		try {
+			String status = accountService.getStatus(UUID.randomUUID().toString());
+			return Response.status(Response.Status.OK).entity(status).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getMessage()).build();
+		}
 	}
 
 	@GET
 	@Path("/report")
 	public Response getReportServiceStatus() {
-		return Response.status(Response.Status.OK).entity(reportService.getStatus(UUID.randomUUID().toString()))
-				.build();
+		try {
+			String status = reportService.getStatus(UUID.randomUUID().toString());
+			return Response.status(Response.Status.OK).entity(status).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getMessage()).build();
+		}
 	}
 
 }

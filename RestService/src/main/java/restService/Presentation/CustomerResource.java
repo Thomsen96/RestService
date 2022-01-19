@@ -21,13 +21,6 @@ public class CustomerResource {
 	AccountService accountService = new AccountService(new MessageQueueFactory().getMessageQueue());
 	private TokenService tokenService = new TokenService(new MessageQueueFactory().getMessageQueue());
 
-	@GET
-	@Path("/status")
-	public Response get() {
-		return Response.status(Response.Status.OK).entity(accountService.getStatus(UUID.randomUUID().toString()))
-				.build();
-	}
-
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
@@ -77,12 +70,6 @@ public class CustomerResource {
 				.status(Response.Status.OK)
 				.entity(String.format("Report requested for %s", customerId))
 				.build();
-	}
-
-	@GET
-	@Path("/tokens/status")
-	public Response getTokenStatus() {
-		return Response.status(Response.Status.OK).entity(tokenService.getStatus(UUID.randomUUID().toString())).build();
 	}
 
 }

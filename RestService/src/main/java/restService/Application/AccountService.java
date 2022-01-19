@@ -32,7 +32,7 @@ public class AccountService {
 
 	private ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
 
-	public String getStatus(String sessionId) {
+	public String getStatus(String sessionId) throws Exception {
 
 		messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
 		sessions.put(sessionId, new CompletableFuture<Event>());
@@ -55,7 +55,7 @@ public class AccountService {
         if (eventResponse.isSuccess()) {
             return eventResponse.getArgument(0, String.class);
         }
-        return eventResponse.getErrorMessage();
+        throw new Exception(eventResponse.getErrorMessage());
 	}
 
 	public void handleGetStatus(Event event) {

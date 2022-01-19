@@ -70,7 +70,7 @@ public class PaymentService {
         sessions.get(sessionId).complete(event);
     }
 
-    public String getStatus(String sessionId) {
+    public String getStatus(String sessionId) throws Exception {
         messageQueue.addHandler("PaymentStatusResponse." + sessionId, this::handleResponse);
         sessions.put(sessionId, new CompletableFuture<Event>());
         messageQueue.publish(new Event("PaymentStatusRequest", new Object[] { sessionId }));
@@ -86,8 +86,13 @@ public class PaymentService {
                 }
             }
         }).start();
+        
         EventResponse eventResponse = sessions.get(sessionId).join().getArgument(0, EventResponse.class);
-        return eventResponse.getArgument(0, String.class);
+
+        if (eventResponse.isSuccess()) {
+            return eventResponse.getArgument(0, String.class);
+        }
+        throw new Exception(eventResponse.getErrorMessage());
     }    
     
     public void handleResponse(Event event) {

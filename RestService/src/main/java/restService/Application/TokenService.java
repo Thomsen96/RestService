@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.netty.handler.timeout.TimeoutException;
 import io.vertx.ext.web.Session;
 
 public class TokenService {
@@ -20,7 +21,7 @@ public class TokenService {
         this.messageQueue = messageQueue;
     }
 
-    public String getStatus(String sessionId) {
+    public String getStatus(String sessionId) throws Exception {
         messageQueue.addHandler("TokenStatusResponse." + sessionId, this::handleResponse);
         sessions.put(sessionId, new CompletableFuture<Event>());
         messageQueue.publish(new Event("TokenStatusRequest", new Object[] { sessionId }));
@@ -42,7 +43,7 @@ public class TokenService {
         if (eventResponse.isSuccess()) {
             return eventResponse.getArgument(0, String.class);
         }
-        return eventResponse.getErrorMessage();
+        throw new Exception(eventResponse.getErrorMessage());
     }
 
     public Event getTokensMessageService(String sessionId, String customerId, int numOfTokens) {

@@ -26,7 +26,12 @@ public class ServiceStatusSteps {
   public void theTokenServiceIsRequestedForItsStatus() {
     new Thread(() -> {
       sessionId = UUID.randomUUID().toString();
-      String status = tokenService.getStatus(sessionId);
+      String status;
+      try {
+        status = tokenService.getStatus(sessionId);
+      } catch (Exception e) {
+        status = e.getMessage();
+      }
       statusMessage.complete(status);
     }).start();
   }
@@ -35,7 +40,12 @@ public class ServiceStatusSteps {
   public void theAccountServiceIsRequestedForItsStatus() {
     new Thread(() -> {
       sessionId = UUID.randomUUID().toString();
-      String status = AccountService.getStatus(sessionId);
+      String status;
+      try {
+        status = AccountService.getStatus(sessionId);
+      } catch (Exception e) {
+        status = e.getMessage();
+      }
       statusMessage.complete(status);
     }).start();
   }
