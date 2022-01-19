@@ -1,6 +1,5 @@
 package restService.Application;
 
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -42,6 +41,7 @@ public class PaymentService {
     	String sessionId = event.getType().split("\\.")[1];
         sessions.get(sessionId).complete(event);
     }
+    
     
     public EventResponse getPaymentStatus(String sessionId) throws InterruptedException, ExecutionException {
         messageQueue.publish(new Event("PaymentStatusRequest", new EventResponse(sessionId, true, null)));

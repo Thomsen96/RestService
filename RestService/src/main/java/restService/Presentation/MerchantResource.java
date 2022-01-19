@@ -31,8 +31,7 @@ public class MerchantResource {
     public Response create(String accountNumber) {
         try {
             return Response.status(Response.Status.OK)
-                    .entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(),
-                            Role.MERCHANT))
+                    .entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(), Role.MERCHANT))
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -40,27 +39,6 @@ public class MerchantResource {
         }
     }
 
-    // POST : /customers/tokens -> return HashSet<Token>
-    public static class MerchantPaymentDTO {
-        public String MerchatId, TokenId, Amount, Description;
-    }
-
-    @POST
-    @Path("/payments")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response token(MerchantPaymentDTO data) {
-        try {
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(String.format("Payment requested for mid: %s, token: %s, amount: %s, descr: %s",
-                            data.MerchatId, data.TokenId, data.Amount, data.Description))
-                    .build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
 
     @POST
     @Path("/payments")
@@ -78,7 +56,7 @@ public class MerchantResource {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
 
     }
@@ -98,7 +76,7 @@ public class MerchantResource {
             }
     	} catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     	}	
     }
 
