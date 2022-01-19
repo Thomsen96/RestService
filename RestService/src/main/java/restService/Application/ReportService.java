@@ -20,7 +20,7 @@ public class ReportService {
     public String getStatus(String sessionId) throws Exception {
         messageQueue.addHandler("ReportStatusResponse." + sessionId, this::handleResponse);
         sessions.put(sessionId, new CompletableFuture<Event>());
-        messageQueue.publish(new Event("ReportStatusRequest", new Object[] { sessionId }));
+        messageQueue.publish(new Event("ReportStatusRequest", new EventResponse(sessionId, true, null)));
         
         (new Thread() {
             public void run() {

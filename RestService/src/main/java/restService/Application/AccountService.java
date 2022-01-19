@@ -36,7 +36,7 @@ public class AccountService {
 
 		messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
 		sessions.put(sessionId, new CompletableFuture<Event>());
-		messageQueue.publish(new Event("AccountStatusRequest", new Object[] { sessionId }));
+		messageQueue.publish(new Event("AccountStatusRequest", new EventResponse(sessionId, true, null)));
 
 		(new Thread() {
 			public void run() {

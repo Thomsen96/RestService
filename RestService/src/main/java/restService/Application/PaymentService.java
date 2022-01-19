@@ -64,7 +64,7 @@ public class PaymentService {
     public String getStatus(String sessionId) throws Exception {
         messageQueue.addHandler("PaymentStatusResponse." + sessionId, this::handleResponse);
         sessions.put(sessionId, new CompletableFuture<Event>());
-        messageQueue.publish(new Event("PaymentStatusRequest", new Object[] { sessionId }));
+        messageQueue.publish(new Event("PaymentStatusRequest", new EventResponse(sessionId, true, null)));
         
         (new Thread() {
             public void run() {

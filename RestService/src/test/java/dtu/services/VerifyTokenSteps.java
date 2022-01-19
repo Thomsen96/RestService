@@ -42,7 +42,7 @@ public class VerifyTokenSteps {
     public void theTokenRequestIsSentToTheTokenService() throws InterruptedException {
         Thread.sleep(100);
 
-        Event event = new Event("TokenCreationRequest", customerId, numberOfTokensRequested, sessionId);
+        Event event = new Event("TokenCreationRequest", new EventResponse(sessionId, true, null, customerId, numberOfTokensRequested));
         assertEquals(event, messageQueue.getEvent("TokenCreationRequest"));
     }
 

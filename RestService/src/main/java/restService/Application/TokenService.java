@@ -24,7 +24,7 @@ public class TokenService {
     public String getStatus(String sessionId) throws Exception {
         messageQueue.addHandler("TokenStatusResponse." + sessionId, this::handleResponse);
         sessions.put(sessionId, new CompletableFuture<Event>());
-        messageQueue.publish(new Event("TokenStatusRequest", new Object[] { sessionId }));
+        messageQueue.publish(new Event("TokenStatusRequest", new EventResponse(sessionId, true, null)));
 
         (new Thread() {
             public void run() {
@@ -48,7 +48,7 @@ public class TokenService {
 
     public Event getTokensMessageService(String sessionId, String customerId, int numOfTokens) {
         sessions.put(sessionId, new CompletableFuture<Event>());
-        Event event = new Event("TokenCreationRequest", customerId, numOfTokens, sessionId);
+        Event event = new Event("TokenCreationRequest",new EventResponse(sessionId, true, null, customerId, numOfTokens));
         messageQueue.addHandler("TokenCreationResponse." + sessionId, this::handleResponse);
         messageQueue.publish(event);
 
