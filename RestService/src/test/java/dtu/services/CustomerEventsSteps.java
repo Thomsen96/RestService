@@ -88,7 +88,7 @@ public class CustomerEventsSteps {
 	public void theMessageIsSent() {
 		var thread = new Thread(() -> {
 			try {
-				Event event = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+				Event event = accountService.accountCreationRequest(sessionId, accountNumber, role);
 				EventResponse eventResponse = event.getArgument(0, EventResponse.class);
 				this.customerId = eventResponse.isSuccess() ? eventResponse.getArgument(0, String.class) : eventResponse.getErrorMessage();
 				customerIdComplete.complete(true);
@@ -103,7 +103,7 @@ public class CustomerEventsSteps {
 	public void theCreateCustomerResponseIsReceived() throws InterruptedException {
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, "123");
 		Thread.sleep(100);
-		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE + "." + sessionId, eventResponse));
+		accountService.accountCreationResponseHandler(new Event(role.CREATION_RESPONSE + "." + sessionId, eventResponse));
 	}
 	
 	@Then("a new customer has been created with a customerId")
@@ -120,7 +120,7 @@ public class CustomerEventsSteps {
 	public void theMessagesAreSentAtTheSameTime() {
 		var thread1 = new Thread(() -> {
 			try {
-				Event event1 = accountService.createCustomerCreationRequest(sessionId, accountNumber, role);
+				Event event1 = accountService.accountCreationRequest(sessionId, accountNumber, role);
 				System.out.println("Event1: " + event1);
 				EventResponse eventResponse1 = event1.getArgument(0, EventResponse.class);
 				this.customerId = eventResponse1.isSuccess() ? eventResponse1.getArgument(0, String.class) : eventResponse1.getErrorMessage();
@@ -131,7 +131,7 @@ public class CustomerEventsSteps {
 		});
 		var thread2 = new Thread(() -> {
 			try {	
-				Event event2 = accountService.createCustomerCreationRequest(sessionId2, accountNumber2, role);
+				Event event2 = accountService.accountCreationRequest(sessionId2, accountNumber2, role);
 				System.out.println("Event2: " + event2);
 				EventResponse eventResponse2 = event2.getArgument(0, EventResponse.class);
 				this.customerId2 = eventResponse2.isSuccess() ? eventResponse2.getArgument(0, String.class) : eventResponse2.getErrorMessage();
@@ -152,8 +152,8 @@ public class CustomerEventsSteps {
 		Event event2 = new Event(role.CREATION_RESPONSE + "." + sessionId2, eventResponse2);
 		
 		Thread.sleep(200);
-		accountService.customerCreationResponseHandler(event1);
-		accountService.customerCreationResponseHandler(event2);
+		accountService.accountCreationResponseHandler(event1);
+		accountService.accountCreationResponseHandler(event2);
 	}
 
 	@Then("two distinct CustomerCreationResponses are received")

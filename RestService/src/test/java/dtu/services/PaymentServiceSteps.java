@@ -51,7 +51,7 @@ public class PaymentServiceSteps {
 	public void thePaymentRequestMessageIsSent() {
 		var thread = new Thread(() -> {
 			try {
-				eventResponse = paymentService.createPayment(sessionId, paymentDTO);
+				eventResponse = paymentService.createPaymentRequest(sessionId, paymentDTO);
 				requestCompleted.complete(true);
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
@@ -61,8 +61,9 @@ public class PaymentServiceSteps {
 	}
 	
 	@When("the paymentRequestResponse is received")
-	public void thePaymentRequestResponseIsReceived() {
+	public void thePaymentRequestResponseIsReceived() throws InterruptedException {
 	    EventResponse paymentRequestResponse = new EventResponse(sessionId, true, null);
+	    Thread.sleep(100);
 	    paymentService.handlePaymentResponse(new Event(PaymentService.PAYMENT_RESPONSE + "." + sessionId, paymentRequestResponse));
 	}
 	
@@ -84,8 +85,9 @@ public class PaymentServiceSteps {
 	}
 
 	@When("a failed paymentRequestResponse is received")
-	public void aFailedPaymentRequestResponseIsReceived() {
+	public void aFailedPaymentRequestResponseIsReceived() throws InterruptedException {
 	    EventResponse paymentRequestResponse = new EventResponse(sessionId, false, null);
+	    Thread.sleep(100);
 	    paymentService.handlePaymentResponse(new Event(PaymentService.PAYMENT_RESPONSE + "." + sessionId, paymentRequestResponse));
 	    requestCompleted.join();
 	}

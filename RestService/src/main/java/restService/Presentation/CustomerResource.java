@@ -35,7 +35,7 @@ public class CustomerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(AccountDTO accountDTO) {
 		try {
-			EventResponse outcome = accountService.createCustomerCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.CUSTOMER).getArgument(0, EventResponse.class); 
+			EventResponse outcome = accountService.accountCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.CUSTOMER).getArgument(0, EventResponse.class); 
 			
 			if(outcome.isSuccess()) {
 				return Response.status(Response.Status.CREATED)
@@ -72,11 +72,11 @@ public class CustomerResource {
 //						.entity(new GsonBuilder().setPrettyPrinting().create().toJson(outcome.getArgument(0, String[].class)))
 						.build();				
 			} else {
-				return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
+				return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDTO(outcome.getErrorMessage())).build();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getStackTrace()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorDTO(e.getStackTrace().toString())).build();
 		}
 	}
 

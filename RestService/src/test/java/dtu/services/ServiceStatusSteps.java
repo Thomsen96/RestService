@@ -24,7 +24,7 @@ public class ServiceStatusSteps {
 
   private MockMessageQueue messageQueue = new MockMessageQueue();
   private TokenService tokenService = new TokenService(messageQueue);
-  private AccountService AccountService = new AccountService(messageQueue);
+  private AccountService accountService = new AccountService(messageQueue);
   private PaymentService paymentService = new PaymentService(messageQueue);
   private ReportService reportService = new ReportService(messageQueue);
 
@@ -76,7 +76,7 @@ public class ServiceStatusSteps {
       sessionId = UUID.randomUUID().toString();
       String status;
       try {
-        status = AccountService.getStatus(sessionId);
+        status = accountService.getStatus(sessionId);
       } catch (Exception e) {
         status = e.getMessage();
       }
@@ -114,13 +114,13 @@ public class ServiceStatusSteps {
 
   @When("the Report service replies with the status message {string}")
   public void theReportServiceRepliesWithTheStatusMessage(String statusMessage) {
-	    Event event = new Event("ReportStatusResponse." + sessionId, new EventResponse(sessionId, true, null, statusMessage));
+	    Event event = new Event(ReportService.REPORT_STATUS_RESPONSE + "." + sessionId, new EventResponse(sessionId, true, null, statusMessage));
 	    reportService.handleResponse(event);
   }
   
   @When("the Payment service replies with the status message {string}")
   public void thePaymentServiceRepliesWithTheStatusMessage(String statusMessage) {
-	    Event event = new Event("PaymentStatusResponse." + sessionId, new EventResponse(sessionId, true, null, statusMessage));
+	    Event event = new Event(ReportService.MERCHANT_REPORT_RESPONSE + "." + sessionId, new EventResponse(sessionId, true, null, statusMessage));
 	    paymentService.handleResponse(event);
   }
   
@@ -141,14 +141,14 @@ public class ServiceStatusSteps {
 
   @When("the Token service replies with the status message {string}")
   public void theTokenServiceRepliesWithTheStatusMessage(String statusMessage) {
-    Event event = new Event("TokenStatusResponse." + sessionId, new EventResponse(sessionId, true, null, statusMessage ));
+    Event event = new Event(TokenService.TOKEN_STATUS_RESPONSE + "." + sessionId, new EventResponse(sessionId, true, null, statusMessage ));
     tokenService.handleResponse(event);
   }
 
   @When("the Account service replies with the status message {string}")
   public void theAccountServiceRepliesWithTheStatusMessage(String statusMessage) {
-    Event event = new Event("AccountStatusResponse." + sessionId, new EventResponse(sessionId, true, null, statusMessage ));
-    AccountService.handleGetStatus(event);
+    Event event = new Event(AccountService.ACCOUNT_STATUS_RESPONSE + "." + sessionId, new EventResponse(sessionId, true, null, statusMessage ));
+    accountService.handleGetStatus(event);
   }
 
   @Then("the status message is {string}")
@@ -161,6 +161,25 @@ public class ServiceStatusSteps {
 	  statusMessage.join();
   }
  
+  @Then("the event TokenStatusRequest have been sent")
+  public void theEventTokenStatusRequestHaveBeenSent() {
+	  theEventHaveBeenSent(TokenService.TOKEN_STATUS_REQUEST);// + "." + sessionId);
+  }
+
+  @Then("the event AccountStatusRequest have been sent")
+  public void theEventAccountStatusRequestHaveBeenSent() {
+	  theEventHaveBeenSent(AccountService.ACCOUNT_STATUS_REQUEST);// + "." + sessionId);
+  }
+
+  @Then("the event PaymentStatusRequest have been sent")
+  public void theEventPaymentStatusRequestHaveBeenSent() {
+	  theEventHaveBeenSent(PaymentService.PAYMENT_STATUS_REQUEST);// + "." + sessionId);
+  }
+
+  @Then("the event ReportStatusRequest have been sent")
+  public void theEventReportStatusRequestHaveBeenSent() {
+	  theEventHaveBeenSent(ReportService.REPORT_STATUS_REQUEST);// + "." + sessionId);
+  }
   
 
 }
