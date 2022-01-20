@@ -41,7 +41,6 @@ public class PaymentService {
 
     public void handlePaymentResponse(Event event) {
     	String topic = event.getType().toString();
-//    	String sessionId = topic.split("\\.")[1];
     	String sessionId = topic.split("[.]",0)[1];
         sessions.get(sessionId).complete(event);
     }

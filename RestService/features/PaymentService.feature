@@ -18,11 +18,11 @@ Feature: Payment endpoint
 		Then a Payment Service timeout message is received
 
 		## Not enough money
-  #Scenario: Unsuccessful payment
-#		Given a payment
-#		When the paymentRequest message is sent
-#		And a failed paymentRequestResponse is received
-#		Then the received EventResponse is not a success
+  Scenario: Unsuccessful payment
+		Given a payment
+		When the paymentRequest message is sent
+		And a failed paymentRequestResponse is received
+		Then the received EventResponse is not a success
 		
 #		## Multiple Payments -- Race condition
   #Scenario: Multiple payments
