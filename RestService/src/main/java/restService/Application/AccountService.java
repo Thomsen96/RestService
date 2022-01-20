@@ -40,6 +40,7 @@ public class AccountService {
 
 	private ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
 
+  // TODO: Christian du får problemer med at vi har . i global strings her på getStatus
 	public String getStatus(String sessionId) throws Exception {
 		sessions.put(sessionId, new CompletableFuture<Event>());
 

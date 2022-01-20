@@ -161,6 +161,8 @@ public class ServiceStatusSteps {
 	  statusMessage.join();
   }
  
+  
+  // TODO: Christian du får problemer med at vi har . i global strings her!!
   @Then("the event TokenStatusRequest have been sent")
   public void theEventTokenStatusRequestHaveBeenSent() {
 	  theEventHaveBeenSent(TokenService.TOKEN_STATUS_REQUEST);// + "." + sessionId);

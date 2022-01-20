@@ -70,6 +70,7 @@ public class ReportService {
     }
     
     
+    // TODO: Christian du får problemer med at vi har . i global strings her på getStatus
     public EventResponse getReport(String sessionId, String userId, Role role) throws InterruptedException, ExecutionException {
 		sessions.put(sessionId, new CompletableFuture<Event>());
 
