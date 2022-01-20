@@ -24,15 +24,20 @@ public class CustomerResource {
 	private TokenService tokenService = new TokenService(new MessageQueueFactory().getMessageQueue());
 	ReportService reportService = new ReportService();
 
+	public static class accountDTO{
+		public String accountNumber;
+	}
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response create(String accountNumber) {
+	public Response create(accountDTO accountDTO) {
 		try {
-			EventResponse outcome = accountService.createCustomerCreationRequest(UUID.randomUUID().toString(), accountNumber, Role.CUSTOMER).getArgument(0, EventResponse.class); 
+			EventResponse outcome = accountService.createCustomerCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.CUSTOMER).getArgument(0, EventResponse.class); 
 			
 			if(outcome.isSuccess()) {
-				return Response.status(Response.Status.CREATED).entity(outcome.getArgument(0, String.class)).build();
+				return Response.status(Response.Status.CREATED)
+						.entity(outcome.getArgument(0, String.class))
+						.build();
 			} else {
                 return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
 			}
