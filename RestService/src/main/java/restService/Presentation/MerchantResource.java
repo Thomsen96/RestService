@@ -30,7 +30,7 @@ public class MerchantResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(accountDTO accountDTO) {
         try {
-            var e = accountService.createCustomerCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.MERCHANT);
+            var e = accountService.accountCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.MERCHANT);
             var eventResponse = e.getArgument(0, EventResponse.class);
             
             if(eventResponse.isSuccess()) {
@@ -56,7 +56,7 @@ public class MerchantResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response pay(PaymentDTO dto) {
         try {
-            EventResponse outcome = paymentService.createPayment(UUID.randomUUID().toString(), dto);
+            EventResponse outcome = paymentService.createPaymentRequest(UUID.randomUUID().toString(), dto);
 
             if (outcome.isSuccess()) {
                 return Response.status(Response.Status.OK).build();

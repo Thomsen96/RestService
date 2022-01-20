@@ -56,14 +56,14 @@ public class AccountService {
 		sessions.get(sessionId).complete(event);
 	}
 
-	public Event createCustomerCreationRequest(String sessionId, String accountNumber, Role role) throws InterruptedException, ExecutionException {
+	public Event accountCreationRequest(String sessionId, String accountNumber, Role role) throws InterruptedException, ExecutionException {
 
 		sessions.put(sessionId, new CompletableFuture<Event>());
 		
 		EventResponse eventArgs = new EventResponse(sessionId, true, null, accountNumber);
 		Event event = new Event(role.CREATION_REQUEST, eventArgs);
 
-		messageQueue.addHandler(role.CREATION_RESPONSE + "." + sessionId, this::customerCreationResponseHandler);
+		messageQueue.addHandler(role.CREATION_RESPONSE + "." + sessionId, this::accountCreationResponseHandler);
 		messageQueue.publish(event);
 
 		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "ERROR: Request timed out");
@@ -71,7 +71,7 @@ public class AccountService {
 		return sessions.get(sessionId).join();
 	}
 
-	public void customerCreationResponseHandler(Event event) {
+	public void accountCreationResponseHandler(Event event) {
 		String sessionId = event.getArgument(0, EventResponse.class).getSessionId();
 		sessions.get(sessionId).complete(event);
 	}

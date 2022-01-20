@@ -51,7 +51,7 @@ public class PaymentServiceSteps {
 	public void thePaymentRequestMessageIsSent() {
 		var thread = new Thread(() -> {
 			try {
-				eventResponse = paymentService.createPayment(sessionId, paymentDTO);
+				eventResponse = paymentService.createPaymentRequest(sessionId, paymentDTO);
 				requestCompleted.complete(true);
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();

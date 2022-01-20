@@ -33,7 +33,7 @@ public class CustomerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(accountDTO accountDTO) {
 		try {
-			EventResponse outcome = accountService.createCustomerCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.CUSTOMER).getArgument(0, EventResponse.class); 
+			EventResponse outcome = accountService.accountCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.CUSTOMER).getArgument(0, EventResponse.class); 
 			
 			if(outcome.isSuccess()) {
 				return Response.status(Response.Status.CREATED)
