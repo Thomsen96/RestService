@@ -14,6 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import messaging.Event;
 import messaging.EventResponse;
 
 @Path("/customers")
@@ -28,12 +29,16 @@ public class CustomerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(String accountNumber) {
 		try {
-			return Response.status(Response.Status.CREATED)
-					.entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(),Role.CUSTOMER).getArgument(0, EventResponse.class))
-					.build();
+			EventResponse outcome = accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(),Role.CUSTOMER).getArgument(0, EventResponse.class); 
+			
+			if(outcome.isSuccess()) {
+				return Response.status(Response.Status.CREATED).entity(outcome.getArgument(0, String.class)).build();
+			} else {
+                return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getStackTrace()).build();
 		}
 	}
 
@@ -49,14 +54,19 @@ public class CustomerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response token(CustomerTokensDTO data) {
 		try {
-			return Response.status(Response.Status.OK)
-					.entity(tokenService
-							.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, data.numberOfTokens)
-							.getArgument(0, EventResponse.class).getArgument(0, Token[].class))
-					.build();
+			EventResponse outcome = tokenService
+					.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, data.numberOfTokens)
+					.getArgument(0, EventResponse.class);
+			if(outcome.isSuccess()) {
+				return Response.status(Response.Status.OK)
+						.entity(outcome.getArgument(0, Token[].class))
+						.build();				
+			} else {
+				return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getStackTrace()).build();
 		}
 	}
 
@@ -74,7 +84,7 @@ public class CustomerResource {
             }
     	} catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getStackTrace()).build();
     	}	
 	}
 
