@@ -4,11 +4,10 @@ import restService.Application.AccountService;
 import restService.Application.AccountService.Role;
 import restService.Application.PaymentService;
 import restService.Application.ReportService;
+import restService.Domain.AccountDTO;
 import restService.Domain.PaymentDTO;
 import restService.Domain.PaymentMerchant;
 import restService.Infrastructure.MessageQueueFactory;
-import restService.Presentation.CustomerResource.accountDTO;
-
 import java.util.UUID;
 
 import javax.ws.rs.*;
@@ -28,7 +27,7 @@ public class MerchantResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(accountDTO accountDTO) {
+    public Response create(AccountDTO accountDTO) {
         try {
             var e = accountService.createCustomerCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.MERCHANT);
             var eventResponse = e.getArgument(0, EventResponse.class);
