@@ -12,9 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -35,12 +34,12 @@ public class ServiceStatusSteps {
   
   
   int default_timeout;
-	@BeforeAll()
+	@Before()
 	public void saveTimeout() {
 		this.default_timeout = serviceHelper.TIMEOUT;
 	}
 	
-	@AfterAll()
+	@After()
 	public void restoreTimeout() {
 		serviceHelper.TIMEOUT = this.default_timeout;
 	}
@@ -93,7 +92,7 @@ public class ServiceStatusSteps {
     Event expectedEvent = new Event(eventTopic, new EventResponse(sessionId, true, null));
     Event actualEvent = messageQueue.getEvent(eventTopic);
     
-    assertEquals(expectedEvent, actualEvent );
+    assertEquals(expectedEvent, actualEvent);
   }
 
   @When("the Token service replies with the status message {string}")

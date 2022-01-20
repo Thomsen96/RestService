@@ -7,9 +7,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
@@ -47,12 +44,12 @@ public class CustomerEventsSteps {
 	
 	int default_timeout;
 	
-	@BeforeAll()
+	@Before()
 	public void saveTimeout() {
 		this.default_timeout = serviceHelper.TIMEOUT;
 	}
 	
-	@AfterAll()
+	@After()
 	public void restoreTimeout() {
 		serviceHelper.TIMEOUT = this.default_timeout;
 	}
