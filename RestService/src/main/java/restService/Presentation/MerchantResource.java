@@ -5,10 +5,10 @@ import restService.Application.AccountService.Role;
 import restService.Application.PaymentService;
 import restService.Application.ReportService;
 import restService.Domain.PaymentDTO;
+import restService.Domain.PaymentMerchant;
 import restService.Infrastructure.MessageQueueFactory;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -25,17 +25,25 @@ public class MerchantResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response create(String accountNumber) {
         try {
             var e = accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(), Role.MERCHANT);
-            var id = e.getArgument(0, EventResponse.class).getArgument(0, String.class);
-            return Response.status(Response.Status.OK)
-                    .entity(id)
-                    .build();
+            var eventResponse = e.getArgument(0, EventResponse.class);
+            
+            if(eventResponse.isSuccess()) {
+            	var id = eventResponse.getArgument(0, String.class);
+            	return Response.status(Response.Status.CREATED)
+            			.entity(id)
+            			.build();
+            } else {
+            	return Response.status(Response.Status.BAD_REQUEST)
+            			.entity(eventResponse.getErrorMessage())
+            			.build();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getStackTrace()).build();
         }
     }
 
@@ -53,28 +61,29 @@ public class MerchantResource {
             } else {
                 return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getStackTrace()).build();
         }
 
     }
 
     @GET
     @Path("/reports/{merchantId}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getReport(@PathParam("merchantId") String merchantId) {
     	try {
     		EventResponse outcome = reportService.getMerchantReport(UUID.randomUUID().toString(), merchantId, ReportService.Role.MERCHANT);
     		
             if (outcome.isSuccess()) {
-                return Response.status(Response.Status.OK).build();
+            	PaymentMerchant[] payments = outcome.getArgument(0, PaymentMerchant[].class);
+                return Response.status(Response.Status.OK).entity(payments).build();
             } else {
                 return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
             }
     	} catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getStackTrace()).build();
     	}	
     }
 

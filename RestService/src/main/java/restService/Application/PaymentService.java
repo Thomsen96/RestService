@@ -47,17 +47,16 @@ public class PaymentService {
         sessions.put(sessionId, new CompletableFuture<Event>());
         messageQueue.publish(new Event("PaymentStatusRequest", new EventResponse(sessionId, true, null)));
         
-        (new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    EventResponse eventResponse = new EventResponse(sessionId, false, "No reply from a Payment service");
-                    sessions.get(sessionId).complete(new Event("", eventResponse));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        new Thread(() -> {
+        	try {
+        		Thread.sleep(5000);
+        		EventResponse eventResponse = new EventResponse(sessionId, false, "No reply from a Payment service");
+        		sessions.get(sessionId).complete(new Event("", eventResponse));
+        	} catch (InterruptedException e) {
+        		e.printStackTrace();
+        	}
+			
+		}).start();
         
         EventResponse eventResponse = sessions.get(sessionId).join().getArgument(0, EventResponse.class);
 

@@ -4,6 +4,7 @@ import restService.Application.AccountService;
 import restService.Application.ReportService;
 import restService.Application.AccountService.Role;
 import restService.Application.TokenService;
+import restService.Domain.Payment;
 import restService.Domain.Token;
 import restService.Infrastructure.MessageQueueFactory;
 
@@ -24,10 +25,10 @@ public class CustomerResource {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(String accountNumber) {
 		try {
-			return Response.status(Response.Status.OK)
+			return Response.status(Response.Status.CREATED)
 					.entity(accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(),Role.CUSTOMER).getArgument(0, EventResponse.class))
 					.build();
 		} catch (Exception e) {
@@ -66,7 +67,8 @@ public class CustomerResource {
     		EventResponse outcome = reportService.getMerchantReport(UUID.randomUUID().toString(), customerId, ReportService.Role.CUSTOMER);
     		
             if (outcome.isSuccess()) {
-                return Response.status(Response.Status.OK).build();
+            	Payment[] payments = outcome.getArgument(0, Payment[].class);
+                return Response.status(Response.Status.OK).entity(payments).build();
             } else {
                 return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
             }

@@ -33,14 +33,12 @@ public class AccountService {
 	private ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
 
 	public String getStatus(String sessionId) throws Exception {
-
 		messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
 		sessions.put(sessionId, new CompletableFuture<Event>());
 		messageQueue.publish(new Event("AccountStatusRequest", new EventResponse(sessionId, true, null)));
 
-//		// It's litterally the same, why does this fail?!		
-//		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Account service");
-		
+
+//		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "Account status failed, no reply from a Account service");
 		new Thread(() -> {
 			try {
 				Thread.sleep(5000);
@@ -49,18 +47,7 @@ public class AccountService {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}).start();;
-//		(new Thread() {
-//			public void run() {
-//				try {
-//					Thread.sleep(5000);
-//					sessions.get(sessionId).complete(new Event("", 
-//							new EventResponse(sessionId, false, "No reply from a Account service")));
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}).start();
+		}).start();
 
 		EventResponse eventResponse = sessions.get(sessionId).join().getArgument(0, EventResponse.class);
 
@@ -78,8 +65,9 @@ public class AccountService {
 	public Event createCustomerCreationRequest(String sessionId, String accountNumber, Role role) throws InterruptedException, ExecutionException {
 
 		sessions.put(sessionId, new CompletableFuture<Event>());
-
-		Event event = new Event(role.CREATION_REQUEST, accountNumber, sessionId);
+		
+		EventResponse eventArgs = new EventResponse(sessionId, true, null, accountNumber);
+		Event event = new Event(role.CREATION_REQUEST, eventArgs);
 
 		messageQueue.addHandler(role.CREATION_RESPONSE + "." + sessionId, this::customerCreationResponseHandler);
 		messageQueue.publish(event);

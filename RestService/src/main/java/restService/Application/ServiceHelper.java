@@ -10,30 +10,28 @@ public class ServiceHelper {
 	public static int TIMEOUT = 5000;
 
 	public void addTimeOut(String sessionId, CompletableFuture<Event> session, String errorMessage) {
-		(new Thread() {
-			public void run() {
-				try {
-					Thread.sleep(TIMEOUT);
-					session.complete(new Event("",
-							new EventResponse(sessionId, false, errorMessage)));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+        new Thread(() -> {
+        	try {
+        		Thread.sleep(TIMEOUT);
+        		session.complete(new Event("",
+        				new EventResponse(sessionId, false, errorMessage)));
+        	} catch (InterruptedException e) {
+        		e.printStackTrace();
+        	}
+			
 		}).start();
 	}
 
 	public void addTimeOut2(String sessionId, CompletableFuture<Event> session, String errorMessage) {
-		(new Thread() {
-			public void run() {
-				try {
-					Thread.sleep(TIMEOUT);
-					session.complete(new Event("",
-							new EventResponse(sessionId, false, null, "No reply from a Account service")));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+        new Thread(() -> {
+        	try {
+        		Thread.sleep(TIMEOUT);
+        		session.complete(new Event("",
+        				new EventResponse(sessionId, false, null, "No reply from a Account service")));
+        	} catch (InterruptedException e) {
+        		e.printStackTrace();
+        	}
+			
 		}).start();
 	}
 

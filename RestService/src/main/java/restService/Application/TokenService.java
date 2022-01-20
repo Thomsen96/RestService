@@ -4,13 +4,8 @@ import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;
 
-import java.util.HashMap;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-
-import io.netty.handler.timeout.TimeoutException;
-import io.vertx.ext.web.Session;
 
 public class TokenService {
     private MessageQueue messageQueue;
@@ -26,17 +21,16 @@ public class TokenService {
         sessions.put(sessionId, new CompletableFuture<Event>());
         messageQueue.publish(new Event("TokenStatusRequest", new EventResponse(sessionId, true, null)));
 
-        (new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    EventResponse eventResponse = new EventResponse(sessionId, false, "No reply from a Token service");
-                    sessions.get(sessionId).complete(new Event("", eventResponse));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        new Thread(() -> {
+        	try {
+        		Thread.sleep(5000);
+        		EventResponse eventResponse = new EventResponse(sessionId, false, "No reply from a Token service");
+        		sessions.get(sessionId).complete(new Event("", eventResponse));
+        	} catch (InterruptedException e) {
+        		e.printStackTrace();
+        	}
+			
+		}).start();
 
         EventResponse eventResponse = sessions.get(sessionId).join().getArgument(0, EventResponse.class);
 
@@ -48,7 +42,8 @@ public class TokenService {
 
     public Event getTokensMessageService(String sessionId, String customerId, int numOfTokens) {
         sessions.put(sessionId, new CompletableFuture<Event>());
-        Event event = new Event("TokenCreationRequest",new EventResponse(sessionId, true, null, customerId, numOfTokens));
+		EventResponse eventArgs = new EventResponse(sessionId, true, null, customerId, numOfTokens);
+		Event event = new Event("TokenCreationRequest", eventArgs);
         messageQueue.addHandler("TokenCreationResponse." + sessionId, this::handleResponse);
         messageQueue.publish(event);
 
