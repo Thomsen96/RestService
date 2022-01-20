@@ -4,12 +4,7 @@ import restService.Application.AccountService;
 import restService.Application.ReportService;
 import restService.Application.AccountService.Role;
 import restService.Application.TokenService;
-import restService.Domain.AccountDTO;
-import restService.Domain.CustomerTokensDTO;
-import restService.Domain.ErrorDTO;
-import restService.Domain.Payment;
-import restService.Domain.Token;
-import restService.Domain.TokenDTO;
+import restService.Domain.*;
 import restService.Infrastructure.MessageQueueFactory;
 
 import java.util.UUID;
@@ -20,7 +15,6 @@ import javax.ws.rs.core.Response;
 
 //import com.google.gson.GsonBuilder;
 
-import messaging.Event;
 import messaging.EventResponse;
 
 @Path("/customers")
@@ -34,9 +28,9 @@ public class CustomerResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response create(AccountDTO accountDTO) {
+	public Response create(DTO.CreateAccount account) {
 		try {
-			EventResponse outcome = accountService.accountCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.CUSTOMER).getArgument(0, EventResponse.class); 
+			EventResponse outcome = accountService.accountCreationRequest(UUID.randomUUID().toString(), account.accountId, Role.CUSTOMER).getArgument(0, EventResponse.class);
 			
 			if(outcome.isSuccess()) {
 				return Response.status(Response.Status.CREATED)
@@ -58,11 +52,10 @@ public class CustomerResource {
 	@Path("/tokens")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response token(CustomerTokensDTO data) {
+	public Response token(DTO.CreateTokens data) {
 		System.out.println(data);
 		try {
-			String id = data.getCustomerId();
-			int num = data.getNumberOfTokens();
+
 			EventResponse outcome = tokenService
 			.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, data.numberOfTokens)
 					//.getTokensMessageService(UUID.randomUUID().toString(), id, num)

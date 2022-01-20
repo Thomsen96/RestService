@@ -16,6 +16,7 @@ import messaging.MessageQueue;
 import messaging.implementations.MockMessageQueue;
 import restService.Application.PaymentService;
 import restService.Application.ServiceHelper;
+import restService.Domain.DTO;
 import restService.Domain.PaymentDTO;
 
 public class PaymentServiceSteps {
@@ -27,7 +28,7 @@ public class PaymentServiceSteps {
 	PaymentService paymentService = new PaymentService(messageQueue);
 
 	EventResponse eventResponse;
-	PaymentDTO paymentDTO;
+	DTO.CreatePayment paymentDTO;
 	CompletableFuture<Boolean> requestCompleted = new CompletableFuture<>();
 	
 	String sessionId;
@@ -42,7 +43,7 @@ public class PaymentServiceSteps {
 	
 	@Given("a payment")
 	public void aPayment() {
-	    this.paymentDTO = new PaymentDTO();
+	    this.paymentDTO = new DTO.CreatePayment();
 	    this.sessionId = UUID.randomUUID().toString();
 	}
 	

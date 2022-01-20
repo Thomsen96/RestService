@@ -5,6 +5,7 @@ import restService.Application.AccountService.Role;
 import restService.Application.PaymentService;
 import restService.Application.ReportService;
 import restService.Domain.AccountDTO;
+import restService.Domain.DTO;
 import restService.Domain.PaymentDTO;
 import restService.Domain.PaymentMerchant;
 import restService.Infrastructure.MessageQueueFactory;
@@ -27,9 +28,9 @@ public class MerchantResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(AccountDTO accountDTO) {
+    public Response create(DTO.CreateAccount account) {
         try {
-            var e = accountService.accountCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.MERCHANT);
+            var e = accountService.accountCreationRequest(UUID.randomUUID().toString(), account.accountId, Role.MERCHANT);
             var eventResponse = e.getArgument(0, EventResponse.class);
             
             if(eventResponse.isSuccess()) {
@@ -53,7 +54,7 @@ public class MerchantResource {
     @Path("/payments")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response pay(PaymentDTO dto) {
+    public Response pay(DTO.CreatePayment dto) {
         try {
             EventResponse outcome = paymentService.createPaymentRequest(UUID.randomUUID().toString(), dto);
 
