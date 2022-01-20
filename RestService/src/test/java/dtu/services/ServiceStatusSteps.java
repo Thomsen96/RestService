@@ -4,6 +4,7 @@ import messaging.Event;
 import messaging.EventResponse;
 import messaging.implementations.MockMessageQueue;
 import restService.Application.AccountService;
+import restService.Application.ServiceHelper;
 import restService.Application.TokenService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
@@ -19,9 +24,35 @@ public class ServiceStatusSteps {
   private MockMessageQueue messageQueue = new MockMessageQueue();
   private TokenService tokenService = new TokenService(messageQueue);
   private AccountService AccountService = new AccountService(messageQueue);
+
+  ServiceHelper serviceHelper = new ServiceHelper();
+  
   private CompletableFuture<String> statusMessage = new CompletableFuture<>();
+
   String sessionId;
 
+  String responseStatus;
+  
+  
+  int default_timeout;
+	@BeforeAll()
+	public void saveTimeout() {
+		this.default_timeout = serviceHelper.TIMEOUT;
+	}
+	
+	@AfterAll()
+	public void restoreTimeout() {
+		serviceHelper.TIMEOUT = this.default_timeout;
+	}
+
+	
+	
+	@Given("the ServiceHelper timeout is {int} ms")
+	public void theTimeoutIsMs(Integer newTimeout) {
+	    serviceHelper.TIMEOUT = newTimeout;
+	}
+	
+  
   @When("the Token service is requested for its status")
   public void theTokenServiceIsRequestedForItsStatus() {
     new Thread(() -> {
@@ -80,6 +111,11 @@ public class ServiceStatusSteps {
   @Then("the status message is {string}")
   public void theStatusMessageIs(String statusMessage) {
     assertEquals(statusMessage, this.statusMessage.join());
+  }
+  
+  @When("the service does not answer")
+  public void theServiceDoesNotAnswer() throws InterruptedException {
+	  statusMessage.join();
   }
 
 }

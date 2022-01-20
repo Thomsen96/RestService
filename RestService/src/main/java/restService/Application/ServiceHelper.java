@@ -7,7 +7,11 @@ import messaging.EventResponse;
 
 public class ServiceHelper {
 
-	public static int TIMEOUT = 5000;
+	public static int TIMEOUT;
+	
+	public ServiceHelper() {
+		this.TIMEOUT = 5000;
+	}
 
 	public void addTimeOut(String sessionId, CompletableFuture<Event> session, String errorMessage) {
         new Thread(() -> {

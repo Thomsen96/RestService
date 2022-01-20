@@ -33,27 +33,21 @@ public class AccountService {
 	private ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
 
 	public String getStatus(String sessionId) throws Exception {
-		messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
 		sessions.put(sessionId, new CompletableFuture<Event>());
+
+		messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
 		messageQueue.publish(new Event("AccountStatusRequest", new EventResponse(sessionId, true, null)));
 
 
-//		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "Account status failed, no reply from a Account service");
-		new Thread(() -> {
-			try {
-				Thread.sleep(5000);
-				sessions.get(sessionId).complete(new Event("", 
-						new EventResponse(sessionId, false, "No reply from a Account service")));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}).start();
+		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Account service");
 
-		EventResponse eventResponse = sessions.get(sessionId).join().getArgument(0, EventResponse.class);
+		Event event = sessions.get(sessionId).join();
+		EventResponse eventResponse = event.getArgument(0, EventResponse.class);
 
 		if (eventResponse.isSuccess()) {
 			return eventResponse.getArgument(0, String.class);
 		}
+		
 		throw new Exception(eventResponse.getErrorMessage());
 	}
 
