@@ -39,10 +39,12 @@ public class PaymentService {
     }
 
     public void handlePaymentResponse(Event event) {
-    	String sessionId = event.getType().split("\\.")[1];
+    	String topic = event.getType().toString();
+//    	String sessionId = topic.split("\\.")[1];
+    	String sessionId = topic.split("[.]",0)[1];
         sessions.get(sessionId).complete(event);
     }
-    
+  
 
     public String getStatus(String sessionId) throws Exception {
     	sessions.put(sessionId, new CompletableFuture<Event>());
