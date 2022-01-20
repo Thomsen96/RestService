@@ -58,12 +58,10 @@ public class CustomerResource {
 
 			EventResponse outcome = tokenService
 			.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, data.numberOfTokens)
-					//.getTokensMessageService(UUID.randomUUID().toString(), id, num)
 					.getArgument(0, EventResponse.class);
 			if(outcome.isSuccess()) {
 				return Response.status(Response.Status.OK)
 				.entity(outcome.getArgument(0, TokenDTO.class))
-//						.entity(new GsonBuilder().setPrettyPrinting().create().toJson(outcome.getArgument(0, String[].class)))
 						.build();				
 			} else {
 				return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDTO(outcome.getErrorMessage())).build();
