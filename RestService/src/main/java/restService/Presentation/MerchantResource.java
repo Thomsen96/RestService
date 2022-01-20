@@ -28,7 +28,7 @@ public class MerchantResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(String accountNumber) {
         try {
-            var e = accountService.createCustomerCreationRequest(accountNumber, UUID.randomUUID().toString(), Role.MERCHANT);
+            var e = accountService.createCustomerCreationRequest(UUID.randomUUID().toString(), accountNumber, Role.MERCHANT);
             var eventResponse = e.getArgument(0, EventResponse.class);
             
             if(eventResponse.isSuccess()) {
