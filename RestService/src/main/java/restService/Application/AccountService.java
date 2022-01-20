@@ -3,7 +3,7 @@ package restService.Application;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-
+import restService.Domain.DTO;
 import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;
@@ -69,7 +69,7 @@ public class AccountService {
 
 		sessions.put(sessionId, new CompletableFuture<Event>());
 		
-		EventResponse eventArgs = new EventResponse(sessionId, true, null, accountNumber);
+		EventResponse eventArgs = new EventResponse(sessionId, true, null, new DTO.CreateAccount(accountNumber));
 		Event event = new Event(role.CREATION_REQUEST, eventArgs);
 
 		messageQueue.addHandler(role.CREATION_RESPONSE + "." + sessionId, this::accountCreationResponseHandler);
