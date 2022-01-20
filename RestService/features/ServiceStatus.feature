@@ -27,8 +27,8 @@ Feature: Query services for status
   Scenario: Payment service status
     When the Payment service is requested for its status
     Then the event PaymentStatusRequest have been sent
-    When the Payment service replies with the status message "Payment service ready"
-    Then the status message is "Payment service ready"
+    When the Payment service replies with the status message "Sanity check for payment service"
+    Then the status message is "Sanity check for payment service"
 
   Scenario: Payment service status request times out
   	Given the ServiceHelper timeout is 10 ms
