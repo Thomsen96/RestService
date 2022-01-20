@@ -9,6 +9,7 @@ import restService.Domain.CustomerTokensDTO;
 import restService.Domain.ErrorDTO;
 import restService.Domain.Payment;
 import restService.Domain.Token;
+import restService.Domain.TokenDTO;
 import restService.Infrastructure.MessageQueueFactory;
 
 import java.util.UUID;
@@ -68,7 +69,7 @@ public class CustomerResource {
 					.getArgument(0, EventResponse.class);
 			if(outcome.isSuccess()) {
 				return Response.status(Response.Status.OK)
-				.entity(outcome.getArgument(0, String[].class))
+				.entity(outcome.getArgument(0, TokenDTO.class))
 //						.entity(new GsonBuilder().setPrettyPrinting().create().toJson(outcome.getArgument(0, String[].class)))
 						.build();				
 			} else {
