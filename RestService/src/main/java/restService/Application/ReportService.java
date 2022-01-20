@@ -8,20 +8,28 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
+import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.HANDLE.REPORT_CUSTOMER_REQUESTED;
+import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.HANDLE.REPORT_MANAGER_REQUESTED;
+import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.PUBLISH.REPORT_CUSTOMER_RESPONDED;
+import static messaging.GLOBAL_STRINGS.REPORT_SERVICE.PUBLISH.REPORT_MANAGER_RESPONDED;
+import static messaging.GLOBAL_STRINGS.REST_SERVICE.HANDLE.REPORT_MERCHANT_RESPONDED;
+import static messaging.GLOBAL_STRINGS.REST_SERVICE.HANDLE.REST_STATUS_REQUESTED;
+import static messaging.GLOBAL_STRINGS.REST_SERVICE.PUBLISH.REPORT_MERCHANT_REQUESTED;
+
 
 public class ReportService {
 	
-	public static final String REPORT_STATUS_REQUEST = "ReportStatusRequest";
-	public static final String REPORT_STATUS_RESPONSE = "ReportStatusResponse";
+	public static final String REPORT_STATUS_REQUEST = REST_STATUS_REQUESTED;
+	public static final String REPORT_STATUS_RESPONSE = "ReportStatusResponse.";
 	
-	public static final String CUSTOMER_REPORT_REQUEST = "ReportCustomerRequest";
-	public static final String CUSTOMER_REPORT_RESPONSE = "HandleReportCustomerResponse";
+	public static final String CUSTOMER_REPORT_REQUEST = REPORT_CUSTOMER_REQUESTED;
+	public static final String CUSTOMER_REPORT_RESPONSE = REPORT_CUSTOMER_RESPONDED;
 	
-	public static final String MERCHANT_REPORT_REQUEST = "ReportMerchantRequest";
-	public static final String MERCHANT_REPORT_RESPONSE = "HandleReportMerchantResponse";
+	public static final String MERCHANT_REPORT_REQUEST = REPORT_MERCHANT_REQUESTED;
+	public static final String MERCHANT_REPORT_RESPONSE = REPORT_MERCHANT_RESPONDED;
 	
-	public static final String MANAGER_REPORT_REQUEST = "ReportManagerRequest";
-	public static final String MANAGER_REPORT_RESPONSE = "HandleReportManagerResponse";
+	public static final String MANAGER_REPORT_REQUEST = REPORT_MANAGER_REQUESTED;
+	public static final String MANAGER_REPORT_RESPONSE = REPORT_MANAGER_RESPONDED;
 	
 	
 	public ReportService(MessageQueue messageQueue) {
@@ -51,7 +59,7 @@ public class ReportService {
     public String getStatus(String sessionId) throws Exception {
     	sessions.put(sessionId, new CompletableFuture<Event>());
 
-    	messageQueue.addHandler(REPORT_STATUS_RESPONSE + "." + sessionId, this::handleResponse);
+    	messageQueue.addHandler(REPORT_STATUS_RESPONSE  + sessionId, this::handleResponse);
         messageQueue.publish(new Event(REPORT_STATUS_REQUEST, new EventResponse(sessionId, true, null)));
         
         serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Report service");
@@ -74,7 +82,7 @@ public class ReportService {
     public EventResponse getReport(String sessionId, String userId, Role role) throws InterruptedException, ExecutionException {
 		sessions.put(sessionId, new CompletableFuture<Event>());
 
-		messageQueue.addHandler(role.RESPONSE + "." + sessionId, this::reportResponseHandler);
+		messageQueue.addHandler(role.RESPONSE  + sessionId, this::reportResponseHandler);
 		messageQueue.publish(new Event(role.REQUEST, new EventResponse(sessionId, true, null, new Object[] {userId} )));
 
 		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "ERROR: Request timed out");

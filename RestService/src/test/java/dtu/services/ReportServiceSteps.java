@@ -63,9 +63,10 @@ public class ReportServiceSteps {
 	}
 	
 	@When("the getReport response message is received")
-	public void thePaymentRequestResponseIsReceived() {
+	public void thePaymentRequestResponseIsReceived() throws InterruptedException {
 	    EventResponse paymentRequestResponse = new EventResponse(sessionId, true, null);
-	    reportService.reportResponseHandler(new Event(role.RESPONSE + "." + sessionId, paymentRequestResponse));
+		Thread.sleep(200);
+	    reportService.reportResponseHandler(new Event(role.RESPONSE  + sessionId, paymentRequestResponse));
 	}
 		
 	@Then("a successful EventResponse is received")

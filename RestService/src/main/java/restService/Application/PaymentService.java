@@ -10,17 +10,22 @@ import messaging.MessageQueue;
 import restService.Domain.DTO;
 import restService.Domain.PaymentDTO;
 
+import static messaging.GLOBAL_STRINGS.PAYMENT_SERVICE.HANDLE.PAYMENT_REQUESTED;
+import static messaging.GLOBAL_STRINGS.PAYMENT_SERVICE.HANDLE.PAYMENT_STATUS_REQUESTED;
+import static messaging.GLOBAL_STRINGS.PAYMENT_SERVICE.PUBLISH.PAYMENT_RESPONDED;
+import static messaging.GLOBAL_STRINGS.PAYMENT_SERVICE.PUBLISH.PAYMENT_STATUS_RESPONDED;
+
 public class PaymentService {
 
     public PaymentService(MessageQueue messageQueue) {
         this.messageQueue = messageQueue;
     }
     
-	public static final String PAYMENT_STATUS_REQUEST = "PaymentStatusRequest";
-	public static final String PAYMENT_STATUS_RESPONSE = "PaymentStatusResponse";
+	public static final String PAYMENT_STATUS_REQUEST = PAYMENT_STATUS_REQUESTED;
+	public static final String PAYMENT_STATUS_RESPONSE = PAYMENT_STATUS_RESPONDED;
 
-    public static final String PAYMENT_REQUEST = "PaymentRequest";
-    public static final String PAYMENT_RESPONSE = "PaymentResponse";
+    public static final String PAYMENT_REQUEST = PAYMENT_REQUESTED;
+    public static final String PAYMENT_RESPONSE = PAYMENT_RESPONDED;
 
 
     ServiceHelper serviceHelper = new ServiceHelper();
@@ -35,7 +40,7 @@ public class PaymentService {
     	String amount = dto.amount;
     	String description = dto.description;
 
-        messageQueue.addHandler(PAYMENT_RESPONSE + "." + sessionId, this::handlePaymentResponse);
+        messageQueue.addHandler(PAYMENT_RESPONSE + sessionId, this::handlePaymentResponse);
         messageQueue.publish(new Event(PAYMENT_REQUEST, new EventResponse(sessionId, true, null, token, merchant, amount, description)));
         
         serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "Payment timed out");
@@ -53,11 +58,10 @@ public class PaymentService {
     }
   
 
-    // TODO: Christian du får problemer med at vi har . i global strings her på getStatus
     public String getStatus(String sessionId) throws Exception {
     	sessions.put(sessionId, new CompletableFuture<Event>());
     	
-    	messageQueue.addHandler(PAYMENT_STATUS_RESPONSE + "." + sessionId, this::handleResponse);
+    	messageQueue.addHandler(PAYMENT_STATUS_RESPONSE + sessionId, this::handleResponse);
         messageQueue.publish(new Event(PAYMENT_STATUS_REQUEST, new EventResponse(sessionId, true, null)));
         
         serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Payment service");

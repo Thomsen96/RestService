@@ -103,7 +103,7 @@ public class CustomerEventsSteps {
 	public void theCreateCustomerResponseIsReceived() throws InterruptedException {
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, "123");
 		Thread.sleep(100);
-		accountService.accountCreationResponseHandler(new Event(role.CREATION_RESPONSE + "." + sessionId, eventResponse));
+		accountService.accountCreationResponseHandler(new Event(role.CREATION_RESPONSE  + sessionId, eventResponse));
 	}
 	
 	@Then("a new customer has been created with a customerId")
@@ -147,9 +147,9 @@ public class CustomerEventsSteps {
 	@When("the createCustomerResponses are received in reverse order")
 	public void theCreateCustomerResponsesAreReceivedInReverseOrder() throws InterruptedException {
 		EventResponse eventResponse1 = new EventResponse(sessionId, true, null, "123");
-		Event event1 = new Event(role.CREATION_RESPONSE + "." + sessionId, eventResponse1);
+		Event event1 = new Event(role.CREATION_RESPONSE  + sessionId, eventResponse1);
 		EventResponse eventResponse2 = new EventResponse(sessionId2, true, null, "321");
-		Event event2 = new Event(role.CREATION_RESPONSE + "." + sessionId2, eventResponse2);
+		Event event2 = new Event(role.CREATION_RESPONSE  + sessionId2, eventResponse2);
 		
 		Thread.sleep(200);
 		accountService.accountCreationResponseHandler(event1);

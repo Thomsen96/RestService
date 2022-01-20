@@ -114,13 +114,13 @@ public class ServiceStatusSteps {
 
   @When("the Report service replies with the status message {string}")
   public void theReportServiceRepliesWithTheStatusMessage(String statusMessage) {
-	    Event event = new Event(ReportService.REPORT_STATUS_RESPONSE + "." + sessionId, new EventResponse(sessionId, true, null, statusMessage));
+	    Event event = new Event(ReportService.REPORT_STATUS_RESPONSE + sessionId, new EventResponse(sessionId, true, null, statusMessage));
 	    reportService.handleResponse(event);
   }
   
   @When("the Payment service replies with the status message {string}")
   public void thePaymentServiceRepliesWithTheStatusMessage(String statusMessage) {
-	    Event event = new Event(ReportService.MERCHANT_REPORT_RESPONSE + "." + sessionId, new EventResponse(sessionId, true, null, statusMessage));
+	    Event event = new Event(ReportService.MERCHANT_REPORT_RESPONSE  + sessionId, new EventResponse(sessionId, true, null, statusMessage));
 	    paymentService.handleResponse(event);
   }
   
@@ -141,13 +141,13 @@ public class ServiceStatusSteps {
 
   @When("the Token service replies with the status message {string}")
   public void theTokenServiceRepliesWithTheStatusMessage(String statusMessage) {
-    Event event = new Event(TokenService.TOKEN_STATUS_RESPONSE + "." + sessionId, new EventResponse(sessionId, true, null, statusMessage ));
+    Event event = new Event(TokenService.TOKEN_STATUS_RESPONSE  + sessionId, new EventResponse(sessionId, true, null, statusMessage ));
     tokenService.handleResponse(event);
   }
 
   @When("the Account service replies with the status message {string}")
   public void theAccountServiceRepliesWithTheStatusMessage(String statusMessage) {
-    Event event = new Event(AccountService.ACCOUNT_STATUS_RESPONSE + "." + sessionId, new EventResponse(sessionId, true, null, statusMessage ));
+    Event event = new Event(AccountService.ACCOUNT_STATUS_RESPONSE  + sessionId, new EventResponse(sessionId, true, null, statusMessage ));
     accountService.handleGetStatus(event);
   }
 

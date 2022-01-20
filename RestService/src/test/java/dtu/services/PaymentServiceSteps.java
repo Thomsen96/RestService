@@ -65,7 +65,7 @@ public class PaymentServiceSteps {
 	public void thePaymentRequestResponseIsReceived() throws InterruptedException {
 	    EventResponse paymentRequestResponse = new EventResponse(sessionId, true, null);
 	    Thread.sleep(100);
-	    paymentService.handlePaymentResponse(new Event(PaymentService.PAYMENT_RESPONSE + "." + sessionId, paymentRequestResponse));
+	    paymentService.handlePaymentResponse(new Event(PaymentService.PAYMENT_RESPONSE  + sessionId, paymentRequestResponse));
 	}
 	
 	
@@ -89,7 +89,7 @@ public class PaymentServiceSteps {
 	public void aFailedPaymentRequestResponseIsReceived() throws InterruptedException {
 	    EventResponse paymentRequestResponse = new EventResponse(sessionId, false, null);
 	    Thread.sleep(100);
-	    paymentService.handlePaymentResponse(new Event(PaymentService.PAYMENT_RESPONSE + "." + sessionId, paymentRequestResponse));
+	    paymentService.handlePaymentResponse(new Event(PaymentService.PAYMENT_RESPONSE  + sessionId, paymentRequestResponse));
 	    requestCompleted.join();
 	}
 

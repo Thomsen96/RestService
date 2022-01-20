@@ -44,7 +44,7 @@ public class AccountService {
 	public String getStatus(String sessionId) throws Exception {
 		sessions.put(sessionId, new CompletableFuture<Event>());
 
-		messageQueue.addHandler(ACCOUNT_STATUS_RESPONSE + "." + sessionId, this::handleGetStatus);
+		messageQueue.addHandler(ACCOUNT_STATUS_RESPONSE  + sessionId, this::handleGetStatus);
 		messageQueue.publish(new Event(ACCOUNT_STATUS_REQUEST, new EventResponse(sessionId, true, null)));
 
 
@@ -72,7 +72,7 @@ public class AccountService {
 		EventResponse eventArgs = new EventResponse(sessionId, true, null, new DTO.CreateAccount(accountNumber));
 		Event event = new Event(role.CREATION_REQUEST, eventArgs);
 
-		messageQueue.addHandler(role.CREATION_RESPONSE + "." + sessionId, this::accountCreationResponseHandler);
+		messageQueue.addHandler(role.CREATION_RESPONSE  + sessionId, this::accountCreationResponseHandler);
 		messageQueue.publish(event);
 
 		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "ERROR: Request timed out");

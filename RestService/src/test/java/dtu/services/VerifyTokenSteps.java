@@ -49,7 +49,7 @@ public class VerifyTokenSteps {
 
     @When("token service sends a response on the queue")
     public void tokenServiceSendsAResponseOnTheQueue() {
-        tokenService.handleResponse(new Event(TokenService.TOKEN_CREATION_RESPONSE + "." + sessionId, new EventResponse(sessionId, true, null, new Token( customerId, "TOKEN STRING", true))));
+        tokenService.handleResponse(new Event(TokenService.TOKEN_CREATION_RESPONSE  + sessionId, new EventResponse(sessionId, true, null, new Token( customerId, "TOKEN STRING", true))));
     }
 
     @Then("the service can return the token to the user")
