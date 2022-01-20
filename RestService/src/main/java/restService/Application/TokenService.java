@@ -29,7 +29,7 @@ public class TokenService {
     public String getStatus(String sessionId) throws Exception {
     	sessions.put(sessionId, new CompletableFuture<Event>());
 
-    	messageQueue.addHandler(TOKEN_STATUS_RESPONSE + "." + sessionId, this::handleResponse);
+    	messageQueue.addHandler(TOKEN_STATUS_RESPONSE  + sessionId, this::handleResponse);
         messageQueue.publish(new Event(TOKEN_STATUS_REQUEST, new EventResponse(sessionId, true, null)));
 
 		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Token service");
@@ -50,7 +50,7 @@ public class TokenService {
         
 		EventResponse eventArgs = new EventResponse(sessionId, true, null, customerId, numOfTokens);
 		Event event = new Event(TOKEN_CREATION_REQUEST, eventArgs);
-		messageQueue.addHandler(TOKEN_CREATION_RESPONSE + "." + sessionId, this::handleResponse);
+		messageQueue.addHandler(TOKEN_CREATION_RESPONSE  + sessionId, this::handleResponse);
         messageQueue.publish(event);
 
         // TODO: Add timeout handling
