@@ -29,10 +29,13 @@ public class PaymentService {
 
     public EventResponse createPaymentRequest(String sessionId, PaymentDTO dto) throws InterruptedException, ExecutionException {
         sessions.put(sessionId, new CompletableFuture<>());
+    	String token = dto.token;
+    	String merchant = dto.merchant;
+    	String amount = dto.amount;
+    	String description = dto.description;
 
         messageQueue.addHandler(PAYMENT_RESPONSE + "." + sessionId, this::handlePaymentResponse);
-        messageQueue.publish(new Event(PAYMENT_REQUEST, new EventResponse(sessionId, true, null, dto)));
-
+        messageQueue.publish(new Event(PAYMENT_REQUEST, new EventResponse(sessionId, true, null, token, merchant, amount, description)));
         
         serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "Payment timed out");
 
