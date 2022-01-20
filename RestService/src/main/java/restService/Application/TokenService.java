@@ -7,17 +7,22 @@ import messaging.MessageQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static messaging.GLOBAL_STRINGS.REST_SERVICE.PUBLISH.TOKEN_CREATION_REQUESTED;
+import static messaging.GLOBAL_STRINGS.TOKEN_SERVICE.HANDLE.TOKEN_STATUS_REQUESTED;
+import static messaging.GLOBAL_STRINGS.TOKEN_SERVICE.PUBLISH.TOKEN_CREATION_RESPONDED;
+import static messaging.GLOBAL_STRINGS.TOKEN_SERVICE.PUBLISH.TOKEN_STATUS_RESPONDED;
+
 public class TokenService {
 	
 	public TokenService(MessageQueue messageQueue) {
 		this.messageQueue = messageQueue;
 	}
 		
-	public static final String TOKEN_STATUS_REQUEST = "TokenStatusRequest";
-	public static final String TOKEN_STATUS_RESPONSE = "TokenStatusResponse";
+	public static final String TOKEN_STATUS_REQUEST = TOKEN_STATUS_REQUESTED;
+	public static final String TOKEN_STATUS_RESPONSE = TOKEN_STATUS_RESPONDED;
 
-    public static final String TOKEN_CREATION_REQUEST = "TokenCreationRequest";
-    public static final String TOKEN_CREATION_RESPONSE = "TokenCreationResponse";
+    public static final String TOKEN_CREATION_REQUEST = TOKEN_CREATION_REQUESTED;
+    public static final String TOKEN_CREATION_RESPONSE = TOKEN_CREATION_RESPONDED;
     
 	
     private MessageQueue messageQueue;

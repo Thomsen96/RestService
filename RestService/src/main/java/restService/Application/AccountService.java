@@ -8,19 +8,24 @@ import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;
 
+import static messaging.GLOBAL_STRINGS.ACCOUNT_SERVICE.HANDLE.*;
+import static messaging.GLOBAL_STRINGS.ACCOUNT_SERVICE.PUBLISH.ACCOUNT_STATUS_RESPONDED;
+import static messaging.GLOBAL_STRINGS.ACCOUNT_SERVICE.PUBLISH.MERCHANT_CREATION_RESPONDED;
+import static messaging.GLOBAL_STRINGS.REST_SERVICE.HANDLE.CUSTOMER_CREATION_RESPONDED;
+
 public class AccountService {
 
 	public AccountService(MessageQueue messageQueue) {
 		this.messageQueue = messageQueue;
 	}
 
-	public static final String ACCOUNT_STATUS_REQUEST = "AccountStatusRequest";
-	public static final String ACCOUNT_STATUS_RESPONSE = "AccountStatusResponse";
+	public static final String ACCOUNT_STATUS_REQUEST = ACCOUNT_STATUS_REQUESTED;
+	public static final String ACCOUNT_STATUS_RESPONSE = ACCOUNT_STATUS_RESPONDED;
 	
-	public static final String CUSTOMER_CREATION_REQUEST = "CustomerCreationRequest";
-	public static final String CUSTOMER_CREATION_RESPONSE = "CustomerCreationResponse";
-	public static final String MERCHANT_CREATION_REQUEST = "MerchantCreationRequest";
-	public static final String MERCHANT_CREATION_RESPONSE = "MerchantCreationResponse";
+	public static final String CUSTOMER_CREATION_REQUEST = CUSTOMER_CREATION_REQUESTED;
+	public static final String CUSTOMER_CREATION_RESPONSE = CUSTOMER_CREATION_RESPONDED;
+	public static final String MERCHANT_CREATION_REQUEST = MERCHANT_CREATION_REQUESTED;
+	public static final String MERCHANT_CREATION_RESPONSE = MERCHANT_CREATION_RESPONDED;
 	
 	public enum Role {
 		CUSTOMER(CUSTOMER_CREATION_REQUEST, CUSTOMER_CREATION_RESPONSE),
