@@ -57,15 +57,17 @@ public class CustomerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response token(CustomerTokensDTO data) {
 		try {
-			EventResponse outcome = tokenService
-					.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, data.numberOfTokens)
-					.getArgument(0, EventResponse.class);
-			if(outcome.isSuccess()) {
+			System.out.println("User " + data.customerId + " is requesting " + data.numberOfTokens + " tokens");
+			Event tokenResponseEvent = tokenService.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, data.numberOfTokens);
+			EventResponse responseArgs = tokenResponseEvent.getArgument(0, EventResponse.class);
+			if(responseArgs.isSuccess()) {
+				System.out.println("Received response: " + responseArgs);
+				System.out.println("Args in response is: " + responseArgs.getArgument(0, String.class));
 				return Response.status(Response.Status.OK)
-						.entity(outcome.getArgument(0, String[].class))
+						.entity(responseArgs.getArgument(0, String.class))
 						.build();				
 			} else {
-				return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
+				return Response.status(Response.Status.BAD_REQUEST).entity(responseArgs.getErrorMessage()).build();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
