@@ -14,13 +14,13 @@ public class PaymentService {
 	ServiceHelper serviceHelper = new ServiceHelper();
 
     public PaymentService(MessageQueue messageQueue) {
-        PaymentService.messageQueue = messageQueue;
+        this.messageQueue = messageQueue;
     }
 
     public static final String PAYMENT_REQUEST = "PaymentRequest";
     public static final String PAYMENT_RESPONSE = "PaymentResponse";
 
-    private static MessageQueue messageQueue;
+    private MessageQueue messageQueue;
 
     ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
 
@@ -45,8 +45,9 @@ public class PaymentService {
     
 
     public String getStatus(String sessionId) throws Exception {
-        messageQueue.addHandler("PaymentStatusResponse." + sessionId, this::handleResponse);
-        sessions.put(sessionId, new CompletableFuture<Event>());
+    	sessions.put(sessionId, new CompletableFuture<Event>());
+    	
+    	messageQueue.addHandler("PaymentStatusResponse." + sessionId, this::handleResponse);
         messageQueue.publish(new Event("PaymentStatusRequest", new EventResponse(sessionId, true, null)));
         
         serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Payment service");

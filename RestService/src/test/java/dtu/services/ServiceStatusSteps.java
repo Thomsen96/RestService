@@ -22,7 +22,7 @@ import io.cucumber.java.en.When;
 
 public class ServiceStatusSteps {
 
-  private static MockMessageQueue messageQueue = new MockMessageQueue();
+  private MockMessageQueue messageQueue = new MockMessageQueue();
   private TokenService tokenService = new TokenService(messageQueue);
   private AccountService AccountService = new AccountService(messageQueue);
   private PaymentService paymentService = new PaymentService(messageQueue);

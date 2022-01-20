@@ -11,7 +11,7 @@ import messaging.MessageQueue;
 public class AccountService {
 
 	public AccountService(MessageQueue messageQueue) {
-		AccountService.messageQueue = messageQueue;
+		this.messageQueue = messageQueue;
 	}
 
 	public enum Role {
@@ -27,8 +27,8 @@ public class AccountService {
 		}
 	}
 
-	private static MessageQueue messageQueue;
-	ServiceHelper serviceHelper = new ServiceHelper();
+	private MessageQueue messageQueue;
+	private ServiceHelper serviceHelper = new ServiceHelper();
 
 	private ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
 
