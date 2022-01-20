@@ -2,11 +2,17 @@ package restService.Domain;
 
 import java.io.Serializable;
 
+//import com.fasterxml.jackson.annotation.JsonProperty;
+
+
+
 public class CustomerTokensDTO implements Serializable{
 
 		private static final long serialVersionUID = 1874329874329809234L;
 
+//		@JsonProperty("customerId")
 		public String customerId;
+//		@JsonProperty("numberOfTokens")
 		public Integer numberOfTokens;
 
 		public CustomerTokensDTO() {

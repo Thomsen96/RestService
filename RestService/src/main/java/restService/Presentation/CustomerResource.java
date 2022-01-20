@@ -4,7 +4,9 @@ import restService.Application.AccountService;
 import restService.Application.ReportService;
 import restService.Application.AccountService.Role;
 import restService.Application.TokenService;
+import restService.Domain.AccountDTO;
 import restService.Domain.CustomerTokensDTO;
+import restService.Domain.ErrorDTO;
 import restService.Domain.Payment;
 import restService.Domain.Token;
 import restService.Infrastructure.MessageQueueFactory;
@@ -14,6 +16,8 @@ import java.util.UUID;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+//import com.google.gson.GsonBuilder;
 
 import messaging.Event;
 import messaging.EventResponse;
@@ -25,26 +29,24 @@ public class CustomerResource {
 	TokenService tokenService = new TokenService(new MessageQueueFactory().getMessageQueue());
 	ReportService reportService = new ReportService(new MessageQueueFactory().getMessageQueue());
 
-	public static class accountDTO{
-		public String accountNumber;
-	}
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response create(accountDTO accountDTO) {
+	public Response create(AccountDTO accountDTO) {
 		try {
 			EventResponse outcome = accountService.accountCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.CUSTOMER).getArgument(0, EventResponse.class); 
 			
 			if(outcome.isSuccess()) {
 				return Response.status(Response.Status.CREATED)
-						.entity(outcome.getArgument(0, String.class))
+						.entity(new AccountDTO(outcome.getArgument(0, String.class)))
 						.build();
 			} else {
-                return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDTO(outcome.getErrorMessage())).build();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getStackTrace()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorDTO(e.getStackTrace().toString())).build();
 		}
 	}
 
@@ -56,22 +58,25 @@ public class CustomerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response token(CustomerTokensDTO data) {
+		System.out.println(data);
 		try {
-			System.out.println("User " + data.customerId + " is requesting " + data.numberOfTokens + " tokens");
-			Event tokenResponseEvent = tokenService.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, data.numberOfTokens);
-			EventResponse responseArgs = tokenResponseEvent.getArgument(0, EventResponse.class);
-			if(responseArgs.isSuccess()) {
-				System.out.println("Received response: " + responseArgs);
-				System.out.println("Args in response is: " + responseArgs.getArgument(0, String.class));
+			String id = data.getCustomerId();
+			int num = data.getNumberOfTokens();
+			EventResponse outcome = tokenService
+			.getTokensMessageService(UUID.randomUUID().toString(), data.customerId, data.numberOfTokens)
+					//.getTokensMessageService(UUID.randomUUID().toString(), id, num)
+					.getArgument(0, EventResponse.class);
+			if(outcome.isSuccess()) {
 				return Response.status(Response.Status.OK)
-						.entity(responseArgs.getArgument(0, String.class))
+				.entity(outcome.getArgument(0, String[].class))
+//						.entity(new GsonBuilder().setPrettyPrinting().create().toJson(outcome.getArgument(0, String[].class)))
 						.build();				
 			} else {
-				return Response.status(Response.Status.BAD_REQUEST).entity(responseArgs.getErrorMessage()).build();
+				return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDTO(outcome.getErrorMessage())).build();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getStackTrace()).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorDTO(e.getStackTrace().toString())).build();
 		}
 	}
 
