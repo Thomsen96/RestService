@@ -7,6 +7,11 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 import messaging.Event;
 import messaging.EventResponse;
@@ -38,6 +43,19 @@ public class CustomerEventsSteps {
 	String customerId2;
 	
 	Role role;
+	
+	
+	int default_timeout;
+	
+	@BeforeAll()
+	public void saveTimeout() {
+		this.default_timeout = serviceHelper.TIMEOUT;
+	}
+	
+	@AfterAll()
+	public void restoreTimeout() {
+		serviceHelper.TIMEOUT = this.default_timeout;
+	}
 
 	
 	@Given("a new createCustomer session has started with accountId {string}")
