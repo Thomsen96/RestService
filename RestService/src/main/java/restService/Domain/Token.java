@@ -29,4 +29,14 @@ public class Token {
     public int hashCode() {
         return Objects.hash(customerId, tokenUuid, tokenValidity);
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Token{");
+        sb.append("customerId='").append(customerId).append('\'');
+        sb.append(", tokenUuid='").append(tokenUuid).append('\'');
+        sb.append(", tokenValidity=").append(tokenValidity);
+        sb.append('}');
+        return sb.toString();
+    }
 }

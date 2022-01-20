@@ -12,6 +12,35 @@ public class Payment {
 		return result;
 	}
 
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
+
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer("Payment{");
+		sb.append("customerId='").append(customerId).append('\'');
+		sb.append(", merchantId='").append(merchantId).append('\'');
+		sb.append(", token='").append(token).append('\'');
+		sb.append(", amount='").append(amount).append('\'');
+		sb.append('}');
+		return sb.toString();
+	}
+
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -54,6 +83,10 @@ public class Payment {
 		this.merchantId = merchantId;
 		this.token = token;
 		this.amount = amount;
+	}
+
+	public Payment() {
+
 	}
 
 	public String getCustomerId() {

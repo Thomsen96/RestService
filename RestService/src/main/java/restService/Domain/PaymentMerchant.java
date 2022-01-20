@@ -48,6 +48,28 @@ public class PaymentMerchant {
 		this.amount = payment.getAmount();
 	}
 
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer("PaymentMerchant{");
+		sb.append("merchantId='").append(merchantId).append('\'');
+		sb.append(", token='").append(token).append('\'');
+		sb.append(", amount='").append(amount).append('\'');
+		sb.append('}');
+		return sb.toString();
+	}
+
 	public String getMerchantId() {
 		return merchantId;
 	}

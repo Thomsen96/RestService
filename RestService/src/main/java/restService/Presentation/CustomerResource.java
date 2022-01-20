@@ -4,6 +4,7 @@ import restService.Application.AccountService;
 import restService.Application.ReportService;
 import restService.Application.AccountService.Role;
 import restService.Application.TokenService;
+import restService.Domain.CustomerTokensDTO;
 import restService.Domain.Payment;
 import restService.Domain.Token;
 import restService.Infrastructure.MessageQueueFactory;
@@ -43,10 +44,7 @@ public class CustomerResource {
 	}
 
 	// POST : /customers/tokens -> return HashSet<Token>
-	public static class CustomerTokensDTO {
-		public String customerId;
-		public Integer numberOfTokens;
-	}
+
 
 	@POST
 	@Path("/tokens")
