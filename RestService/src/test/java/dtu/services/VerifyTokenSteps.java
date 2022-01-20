@@ -42,14 +42,14 @@ public class VerifyTokenSteps {
     public void theTokenRequestIsSentToTheTokenService() throws InterruptedException {
         Thread.sleep(100);
 
-        Event event = new Event("TokenCreationRequest", new EventResponse(sessionId, true, null, customerId, numberOfTokensRequested));
-        assertEquals(event, messageQueue.getEvent("TokenCreationRequest"));
+        Event event = new Event(TokenService.TOKEN_CREATION_REQUEST, new EventResponse(sessionId, true, null, customerId, numberOfTokensRequested));
+        assertEquals(event, messageQueue.getEvent(TokenService.TOKEN_CREATION_REQUEST));
     }
 
 
     @When("token service sends a response on the queue")
     public void tokenServiceSendsAResponseOnTheQueue() {
-        tokenService.handleResponse(new Event("TokenCreationResponse." + sessionId, new EventResponse(sessionId, true, null, new Token( customerId, "TOKEN STRING", true))));
+        tokenService.handleResponse(new Event(TokenService.TOKEN_CREATION_RESPONSE + "." + sessionId, new EventResponse(sessionId, true, null, new Token( customerId, "TOKEN STRING", true))));
     }
 
     @Then("the service can return the token to the user")

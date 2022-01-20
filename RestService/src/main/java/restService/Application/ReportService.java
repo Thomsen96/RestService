@@ -10,7 +10,20 @@ import java.util.concurrent.ExecutionException;
 
 
 public class ReportService {
-
+	
+	public static final String REPORT_STATUS_REQUEST = "ReportStatusRequest";
+	public static final String REPORT_STATUS_RESPONSE = "ReportStatusResponse";
+	
+	public static final String CUSTOMER_REPORT_REQUEST = "ReportCustomerRequest";
+	public static final String CUSTOMER_REPORT_RESPONSE = "HandleReportCustomerResponse";
+	
+	public static final String MERCHANT_REPORT_REQUEST = "ReportMerchantRequest";
+	public static final String MERCHANT_REPORT_RESPONSE = "HandleReportMerchantResponse";
+	
+	public static final String MANAGER_REPORT_REQUEST = "ReportManagerRequest";
+	public static final String MANAGER_REPORT_RESPONSE = "HandleReportManagerResponse";
+	
+	
 	public ReportService(MessageQueue messageQueue) {
 		this.messageQueue = messageQueue;
 	}
@@ -19,9 +32,9 @@ public class ReportService {
     ServiceHelper serviceHelper = new ServiceHelper();
     
 	public enum Role {
-		CUSTOMER("ReportCustomerRequest", "HandleReportCustomerResponse"),
-		MERCHANT("ReportMerchantRequest", "HandleReportMerchantResponse"),
-		MANAGER ("ReportManagerRequest", "HandleReportManagerResponse");
+		CUSTOMER(CUSTOMER_REPORT_REQUEST, CUSTOMER_REPORT_RESPONSE),
+		MERCHANT(MERCHANT_REPORT_REQUEST, MERCHANT_REPORT_RESPONSE),
+		MANAGER (MANAGER_REPORT_REQUEST, MANAGER_REPORT_RESPONSE);
 
 		public final String REQUEST;
 		public final String RESPONSE;
@@ -36,9 +49,10 @@ public class ReportService {
 
 
     public String getStatus(String sessionId) throws Exception {
-        messageQueue.addHandler("ReportStatusResponse." + sessionId, this::handleResponse);
-        sessions.put(sessionId, new CompletableFuture<Event>());
-        messageQueue.publish(new Event("ReportStatusRequest", new EventResponse(sessionId, true, null)));
+    	sessions.put(sessionId, new CompletableFuture<Event>());
+
+    	messageQueue.addHandler(REPORT_STATUS_RESPONSE + "." + sessionId, this::handleResponse);
+        messageQueue.publish(new Event(REPORT_STATUS_REQUEST, new EventResponse(sessionId, true, null)));
         
         serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Report service");
         

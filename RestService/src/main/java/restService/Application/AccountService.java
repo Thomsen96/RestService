@@ -14,9 +14,17 @@ public class AccountService {
 		this.messageQueue = messageQueue;
 	}
 
+	public static final String ACCOUNT_STATUS_REQUEST = "AccountStatusRequest";
+	public static final String ACCOUNT_STATUS_RESPONSE = "AccountStatusResponse";
+	
+	public static final String CUSTOMER_CREATION_REQUEST = "CustomerCreationRequest";
+	public static final String CUSTOMER_CREATION_RESPONSE = "CustomerCreationResponse";
+	public static final String MERCHANT_CREATION_REQUEST = "MerchantCreationRequest";
+	public static final String MERCHANT_CREATION_RESPONSE = "MerchantCreationResponse";
+	
 	public enum Role {
-		CUSTOMER("CustomerCreationRequest", "CustomerCreationResponse"),
-		MERCHANT("MerchantCreationRequest", "MerchantCreationResponse");
+		CUSTOMER(CUSTOMER_CREATION_REQUEST, CUSTOMER_CREATION_RESPONSE),
+		MERCHANT(MERCHANT_CREATION_REQUEST, MERCHANT_CREATION_RESPONSE);
 
 		public final String CREATION_REQUEST;
 		public final String CREATION_RESPONSE;
@@ -26,7 +34,7 @@ public class AccountService {
 			this.CREATION_RESPONSE = respons;
 		}
 	}
-
+	
 	private MessageQueue messageQueue;
 	private ServiceHelper serviceHelper = new ServiceHelper();
 
@@ -35,8 +43,8 @@ public class AccountService {
 	public String getStatus(String sessionId) throws Exception {
 		sessions.put(sessionId, new CompletableFuture<Event>());
 
-		messageQueue.addHandler("AccountStatusResponse." + sessionId, this::handleGetStatus);
-		messageQueue.publish(new Event("AccountStatusRequest", new EventResponse(sessionId, true, null)));
+		messageQueue.addHandler(ACCOUNT_STATUS_RESPONSE + "." + sessionId, this::handleGetStatus);
+		messageQueue.publish(new Event(ACCOUNT_STATUS_REQUEST, new EventResponse(sessionId, true, null)));
 
 
 		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Account service");

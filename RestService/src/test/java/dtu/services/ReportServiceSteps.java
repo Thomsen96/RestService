@@ -74,36 +74,4 @@ public class ReportServiceSteps {
 		assertTrue(this.eventResponse.isSuccess());
 	}
 	
-	
-	/////////////////////////////
-	
-	
-
-//	@Given("the Payments ServiceHelpers timeout is {int} ms")
-//	public void thePaymentsServiceHelpersTimeoutIsMs(Integer newTimeout) {
-//		serviceHelper.TIMEOUT = newTimeout;
-//	}
-//
-//	@When("no paymentRequestResponse is received")
-//	public void noPaymentRequestResponseIsReceived() throws InterruptedException {
-//		requestCompleted.join();
-//	}
-//
-//	@When("a failed paymentRequestResponse is received")
-//	public void aFailedPaymentRequestResponseIsReceived() {
-//	    EventResponse paymentRequestResponse = new EventResponse(sessionId, false, null);
-//	    reportService.handlePaymentResponse(new Event(role.RESPONSE + "." + sessionId, paymentRequestResponse));
-//	    requestCompleted.join();
-//	}
-//
-//	@Then("the received EventResponse is not a success")
-//	public void theReceivedEventResponseIsNotASuccess() {
-//	    assertFalse(eventResponse.isSuccess());
-//	}
-//	
-//	@Then("a Payment Service timeout message is received")
-//	public void aTimeoutMessageIsReceived() {
-//	    assertEquals("Payment timed out", eventResponse.getErrorMessage());
-//	}
-	
 }

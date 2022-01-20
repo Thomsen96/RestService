@@ -8,20 +8,29 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TokenService {
+	
+	public TokenService(MessageQueue messageQueue) {
+		this.messageQueue = messageQueue;
+	}
+		
+	public static final String TOKEN_STATUS_REQUEST = "TokenStatusRequest";
+	public static final String TOKEN_STATUS_RESPONSE = "TokenStatusResponse";
+
+    public static final String TOKEN_CREATION_REQUEST = "TokenCreationRequest";
+    public static final String TOKEN_CREATION_RESPONSE = "TokenCreationResponse";
+    
+	
     private MessageQueue messageQueue;
     ServiceHelper serviceHelper = new ServiceHelper();
     
     private static ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
     
-    public TokenService(MessageQueue messageQueue) {
-        this.messageQueue = messageQueue;
-    }
 
     public String getStatus(String sessionId) throws Exception {
     	sessions.put(sessionId, new CompletableFuture<Event>());
 
-    	messageQueue.addHandler("TokenStatusResponse." + sessionId, this::handleResponse);
-        messageQueue.publish(new Event("TokenStatusRequest", new EventResponse(sessionId, true, null)));
+    	messageQueue.addHandler(TOKEN_STATUS_RESPONSE + "." + sessionId, this::handleResponse);
+        messageQueue.publish(new Event(TOKEN_STATUS_REQUEST, new EventResponse(sessionId, true, null)));
 
 		serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Token service");
 		
@@ -36,10 +45,12 @@ public class TokenService {
     }
 
     public Event getTokensMessageService(String sessionId, String customerId, int numOfTokens) {
-        sessions.put(sessionId, new CompletableFuture<Event>());
+
+    	sessions.put(sessionId, new CompletableFuture<Event>());
+        
 		EventResponse eventArgs = new EventResponse(sessionId, true, null, customerId, numOfTokens);
-		Event event = new Event("TokenCreationRequest", eventArgs);
-        messageQueue.addHandler("TokenCreationResponse." + sessionId, this::handleResponse);
+		Event event = new Event(TOKEN_CREATION_REQUEST, eventArgs);
+		messageQueue.addHandler(TOKEN_CREATION_RESPONSE + "." + sessionId, this::handleResponse);
         messageQueue.publish(event);
 
         // TODO: Add timeout handling
