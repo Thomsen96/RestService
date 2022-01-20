@@ -87,6 +87,7 @@ public class CustomerEventsSteps {
 	@When("the createCustomerResponse is received")
 	public void theCreateCustomerResponseIsReceived() throws InterruptedException {
 		EventResponse eventResponse = new EventResponse(sessionId, true, null, "123");
+		Thread.sleep(100);
 		accountService.customerCreationResponseHandler(new Event(role.CREATION_RESPONSE + "." + sessionId, eventResponse));
 	}
 	
