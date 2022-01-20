@@ -4,6 +4,8 @@ import messaging.Event;
 import messaging.EventResponse;
 import messaging.implementations.MockMessageQueue;
 import restService.Application.AccountService;
+import restService.Application.PaymentService;
+import restService.Application.ReportService;
 import restService.Application.ServiceHelper;
 import restService.Application.TokenService;
 
@@ -20,9 +22,11 @@ import io.cucumber.java.en.When;
 
 public class ServiceStatusSteps {
 
-  private MockMessageQueue messageQueue = new MockMessageQueue();
+  private static MockMessageQueue messageQueue = new MockMessageQueue();
   private TokenService tokenService = new TokenService(messageQueue);
   private AccountService AccountService = new AccountService(messageQueue);
+  private PaymentService paymentService = new PaymentService(messageQueue);
+  private ReportService reportService = new ReportService(messageQueue);
 
   ServiceHelper serviceHelper = new ServiceHelper();
   
@@ -80,11 +84,51 @@ public class ServiceStatusSteps {
     }).start();
   }
 
+  @When("the Payment service is requested for its status")
+  public void thePaymentServiceIsRequestedForItsStatus() {
+	    new Thread(() -> {
+	        sessionId = UUID.randomUUID().toString();
+	        String status;
+	        try {
+	          status = paymentService.getStatus(sessionId);
+	        } catch (Exception e) {
+	          status = e.getMessage();
+	        }
+	        statusMessage.complete(status);
+	      }).start();
+  }
+
+  @When("the Report service is requested for its status")
+  public void theReportServiceIsRequestedForItsStatus() {
+	  new Thread(() -> {
+	        sessionId = UUID.randomUUID().toString();
+	        String status;
+	        try {
+	          status = reportService.getStatus(sessionId);
+	        } catch (Exception e) {
+	          status = e.getMessage();
+	        }
+	        statusMessage.complete(status);
+	      }).start();
+  }
+
+  @When("the Report service replies with the status message {string}")
+  public void theReportServiceRepliesWithTheStatusMessage(String statusMessage) {
+	    Event event = new Event("ReportStatusResponse." + sessionId, new EventResponse(sessionId, true, null, statusMessage));
+	    reportService.handleResponse(event);
+  }
+  
+  @When("the Payment service replies with the status message {string}")
+  public void thePaymentServiceRepliesWithTheStatusMessage(String statusMessage) {
+	    Event event = new Event("PaymentStatusResponse." + sessionId, new EventResponse(sessionId, true, null, statusMessage));
+	    paymentService.handleResponse(event);
+  }
+  
   @Then("the event {string} have been sent")
   public void theEventHaveBeenSent(String eventTopic) {
 
     try {
-      Thread.sleep(50);
+      Thread.sleep(100);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
@@ -116,5 +160,7 @@ public class ServiceStatusSteps {
   public void theServiceDoesNotAnswer() throws InterruptedException {
 	  statusMessage.join();
   }
+ 
+  
 
 }

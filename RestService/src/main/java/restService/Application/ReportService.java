@@ -16,15 +16,6 @@ public class ReportService {
 	
     private MessageQueue messageQueue;
     ServiceHelper serviceHelper = new ServiceHelper();
-
-//    public static final String CUSTOMER_REPORT_REQUEST = "ReportCustomerRequest";
-//    public static final String CUSTOMER_REPORT_RESPONSE = "HandleReportCustomerResponse"; // .SessionId
-//    
-//    public static final String MERCHANT_REPORT_REQUEST = "ReportMerchantRequest";
-//    public static final String MERCHANT_REPORT_RESPONSE = "HandleReportMerchantResponse"; // .SessionId
-//    
-//    public static final String MANAGER_REPORT_REQUEST = "ReportManagerRequest";
-//    public static final String MANAGER_REPORT_RESPONSE = "HandleReportManagerResponse"; // .SessionId
     
 	public enum Role {
 		CUSTOMER("ReportCustomerRequest", "HandleReportCustomerResponse"),
@@ -51,16 +42,8 @@ public class ReportService {
         sessions.put(sessionId, new CompletableFuture<Event>());
         messageQueue.publish(new Event("ReportStatusRequest", new EventResponse(sessionId, true, null)));
         
-        new Thread(() -> {
-        	try {
-        		Thread.sleep(5000);
-        		EventResponse eventResponse = new EventResponse(sessionId, false, "No reply from a Report service");
-        		sessions.get(sessionId).complete(new Event("", eventResponse));
-        	} catch (InterruptedException e) {
-        		e.printStackTrace();
-        	}
-			
-		}).start();
+        serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Report service");
+        
         EventResponse eventResponse = sessions.get(sessionId).join().getArgument(0, EventResponse.class);
 
         if (eventResponse.isSuccess()) {
