@@ -7,6 +7,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 import messaging.Event;
 import messaging.EventResponse;
@@ -38,6 +40,19 @@ public class CustomerEventsSteps {
 	String customerId2;
 	
 	Role role;
+	
+	
+	int default_timeout;
+	
+	@Before()
+	public void saveTimeout() {
+		this.default_timeout = serviceHelper.TIMEOUT;
+	}
+	
+	@After()
+	public void restoreTimeout() {
+		serviceHelper.TIMEOUT = this.default_timeout;
+	}
 
 	
 	@Given("a new createCustomer session has started with accountId {string}")

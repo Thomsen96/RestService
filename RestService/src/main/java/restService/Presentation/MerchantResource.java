@@ -7,6 +7,7 @@ import restService.Application.ReportService;
 import restService.Domain.PaymentDTO;
 import restService.Domain.PaymentMerchant;
 import restService.Infrastructure.MessageQueueFactory;
+import restService.Presentation.CustomerResource.accountDTO;
 
 import java.util.UUID;
 
@@ -23,12 +24,13 @@ public class MerchantResource {
     PaymentService paymentService = new PaymentService(new MessageQueueFactory().getMessageQueue());
     ReportService reportService = new ReportService();
 
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(String accountNumber) {
+    public Response create(accountDTO accountDTO) {
         try {
-            var e = accountService.createCustomerCreationRequest(UUID.randomUUID().toString(), accountNumber, Role.MERCHANT);
+            var e = accountService.createCustomerCreationRequest(UUID.randomUUID().toString(), accountDTO.accountNumber, Role.MERCHANT);
             var eventResponse = e.getArgument(0, EventResponse.class);
             
             if(eventResponse.isSuccess()) {
