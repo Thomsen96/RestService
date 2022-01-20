@@ -10,14 +10,14 @@ Feature: Payment endpoint
 
 
 		## Payment Request timed out
-  #Scenario: Payment request times out
-#		Given a payment
-#		And the Payments ServiceHelpers timeout is 20 ms
-#		When the paymentRequest message is sent
-#		And no paymentRequestResponse is received
-#		Then a Payment Service timeout message is received
+  Scenario: Payment request times out
+		Given a payment
+		And the Payments ServiceHelpers timeout is 20 ms
+		When the paymentRequest message is sent
+		And no paymentRequestResponse is received
+		Then a Payment Service timeout message is received
 
-#		## Not enough money
+		## Not enough money
   #Scenario: Unsuccessful payment
 #		Given a payment
 #		When the paymentRequest message is sent

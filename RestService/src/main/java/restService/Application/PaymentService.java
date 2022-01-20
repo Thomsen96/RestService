@@ -31,11 +31,12 @@ public class PaymentService {
         messageQueue.publish(new Event(PAYMENT_REQUEST, new EventResponse(sessionId, true, null, dto)));
 
         
-        serviceHelper.addTimeOut2(sessionId, sessions.get(sessionId), "Payment timed out");
+        serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "Payment timed out");
 
-        sessions.get(sessionId).join();
-
-        return sessions.get(sessionId).get().getArgument(0, EventResponse.class);
+        Event event = sessions.get(sessionId).join();
+        EventResponse eventResponse = event.getArgument(0, EventResponse.class);
+        
+    	return eventResponse;
     }
 
     public void handlePaymentResponse(Event event) {

@@ -62,7 +62,7 @@ public class PaymentServiceSteps {
 	
 	@When("the paymentRequestResponse is received")
 	public void thePaymentRequestResponseIsReceived() {
-	    EventResponse paymentRequestResponse = new EventResponse(sessionId, true, null, null);
+	    EventResponse paymentRequestResponse = new EventResponse(sessionId, true, null);
 	    paymentService.handlePaymentResponse(new Event(PaymentService.PAYMENT_RESPONSE + "." + sessionId, paymentRequestResponse));
 	}
 	
@@ -85,8 +85,8 @@ public class PaymentServiceSteps {
 
 	@When("a failed paymentRequestResponse is received")
 	public void aFailedPaymentRequestResponseIsReceived() {
-	    EventResponse paymentRequestResponse = new EventResponse(sessionId, false, null, null);
-	    paymentService.handlePaymentResponse(new Event(PaymentService.PAYMENT_RESPONSE + "." + sessionId, eventResponse));
+	    EventResponse paymentRequestResponse = new EventResponse(sessionId, false, null);
+	    paymentService.handlePaymentResponse(new Event(PaymentService.PAYMENT_RESPONSE + "." + sessionId, paymentRequestResponse));
 	    requestCompleted.join();
 	}
 
