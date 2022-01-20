@@ -29,12 +29,13 @@ public class CustomerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(DTO.CreateAccount account) {
+		System.out.println("Creating Customer");
 		try {
 			EventResponse outcome = accountService.accountCreationRequest(UUID.randomUUID().toString(), account.accountId, Role.CUSTOMER).getArgument(0, EventResponse.class);
 			
 			if(outcome.isSuccess()) {
 				return Response.status(Response.Status.CREATED)
-						.entity(new AccountDTO(outcome.getArgument(0, String.class)))
+						.entity(new DTO.CreateAccountResponse(outcome.getArgument(0, String.class)))
 						.build();
 			} else {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorDTO(outcome.getErrorMessage())).build();
@@ -53,7 +54,7 @@ public class CustomerResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response token(DTO.CreateTokens data) {
-		System.out.println(data);
+		System.out.println("Creating Tokens");
 		try {
 
 			EventResponse outcome = tokenService
@@ -75,6 +76,7 @@ public class CustomerResource {
 	@GET
 	@Path("/reports/{customerId}")
 	public Response getReport(@PathParam("customerId") String customerId) {
+			System.out.println("Generating reports for customer " + customerId);
     	try {
     		EventResponse outcome = reportService.getReport(UUID.randomUUID().toString(), customerId, ReportService.Role.CUSTOMER);
     		
