@@ -33,10 +33,6 @@ public class ServiceHelper {
         	}
 			
 		}).start();
-//		(new Thread() {
-//			public void run() {
-//			}
-//		}).start();
 	}
 
 }

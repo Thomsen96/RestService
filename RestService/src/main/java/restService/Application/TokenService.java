@@ -4,13 +4,8 @@ import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;
 
-import java.util.HashMap;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-
-import io.netty.handler.timeout.TimeoutException;
-import io.vertx.ext.web.Session;
 
 public class TokenService {
     private MessageQueue messageQueue;
