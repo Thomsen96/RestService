@@ -10,18 +10,19 @@ import javax.ws.rs.core.Response;
 import messaging.EventResponse;
 import restService.Application.ReportService;
 import restService.Domain.Payment;
+import restService.Infrastructure.MessageQueueFactory;
 
 @Path("/manager")
 public class ManagerRessource {
 
-	ReportService reportService = new ReportService();
+	ReportService reportService = new ReportService(new MessageQueueFactory().getMessageQueue());
 	
 	@GET
 	@Path("/reports")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getReport() {
     	try {
-    		EventResponse outcome = reportService.getMerchantReport(UUID.randomUUID().toString(), "", ReportService.Role.MANAGER);
+    		EventResponse outcome = reportService.getReport(UUID.randomUUID().toString(), "", ReportService.Role.MANAGER);
     		
             if (outcome.isSuccess()) {
             	Payment[] payments = outcome.getArgument(0, Payment[].class);

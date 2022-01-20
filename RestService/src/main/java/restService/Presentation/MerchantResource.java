@@ -22,7 +22,7 @@ public class MerchantResource {
 
     AccountService accountService = new AccountService(new MessageQueueFactory().getMessageQueue());
     PaymentService paymentService = new PaymentService(new MessageQueueFactory().getMessageQueue());
-    ReportService reportService = new ReportService();
+    ReportService reportService = new ReportService(new MessageQueueFactory().getMessageQueue());
 
 
     @POST
@@ -75,7 +75,7 @@ public class MerchantResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getReport(@PathParam("merchantId") String merchantId) {
     	try {
-    		EventResponse outcome = reportService.getMerchantReport(UUID.randomUUID().toString(), merchantId, ReportService.Role.MERCHANT);
+    		EventResponse outcome = reportService.getReport(UUID.randomUUID().toString(), merchantId, ReportService.Role.MERCHANT);
     		
             if (outcome.isSuccess()) {
             	PaymentMerchant[] payments = outcome.getArgument(0, PaymentMerchant[].class);

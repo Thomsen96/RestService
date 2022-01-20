@@ -22,8 +22,8 @@ import messaging.EventResponse;
 public class CustomerResource {
 
 	AccountService accountService = new AccountService(new MessageQueueFactory().getMessageQueue());
-	private TokenService tokenService = new TokenService(new MessageQueueFactory().getMessageQueue());
-	ReportService reportService = new ReportService();
+	TokenService tokenService = new TokenService(new MessageQueueFactory().getMessageQueue());
+	ReportService reportService = new ReportService(new MessageQueueFactory().getMessageQueue());
 
 	public static class accountDTO{
 		public String accountNumber;
@@ -77,7 +77,7 @@ public class CustomerResource {
 	@Path("/reports/{customerId}")
 	public Response getReport(@PathParam("customerId") String customerId) {
     	try {
-    		EventResponse outcome = reportService.getMerchantReport(UUID.randomUUID().toString(), customerId, ReportService.Role.CUSTOMER);
+    		EventResponse outcome = reportService.getReport(UUID.randomUUID().toString(), customerId, ReportService.Role.CUSTOMER);
     		
             if (outcome.isSuccess()) {
             	Payment[] payments = outcome.getArgument(0, Payment[].class);

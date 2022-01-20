@@ -10,8 +10,9 @@ import java.util.concurrent.ExecutionException;
 
 
 public class ReportService {
-	
-	public ReportService() {
+
+	public ReportService(MessageQueue messageQueue) {
+		this.messageQueue = messageQueue;
 	}
 	
     private MessageQueue messageQueue;
@@ -33,9 +34,6 @@ public class ReportService {
     
     private static ConcurrentHashMap<String, CompletableFuture<Event>> sessions = new ConcurrentHashMap<>();
 
-    public ReportService(MessageQueue messageQueue) {
-        this.messageQueue = messageQueue;
-    }
 
     public String getStatus(String sessionId) throws Exception {
         messageQueue.addHandler("ReportStatusResponse." + sessionId, this::handleResponse);
@@ -58,7 +56,7 @@ public class ReportService {
     }
     
     
-    public EventResponse getMerchantReport(String sessionId, String userId, Role role) throws InterruptedException, ExecutionException {
+    public EventResponse getReport(String sessionId, String userId, Role role) throws InterruptedException, ExecutionException {
 		sessions.put(sessionId, new CompletableFuture<Event>());
 
 		messageQueue.addHandler(role.RESPONSE + "." + sessionId, this::reportResponseHandler);
