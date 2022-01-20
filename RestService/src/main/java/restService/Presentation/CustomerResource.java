@@ -64,7 +64,7 @@ public class CustomerResource {
 					.getArgument(0, EventResponse.class);
 			if(outcome.isSuccess()) {
 				return Response.status(Response.Status.OK)
-						.entity(outcome.getArgument(0, Token[].class))
+						.entity(outcome.getArgument(0, String[].class))
 						.build();				
 			} else {
 				return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
