@@ -35,7 +35,7 @@ public class MerchantResource {
             if(eventResponse.isSuccess()) {
             	var id = eventResponse.getArgument(0, String.class);
             	return Response.status(Response.Status.CREATED)
-            			.entity(id)
+            			.entity(new DTO.CreateAccountResponse(id))
             			.build();
             } else {
             	return Response.status(Response.Status.BAD_REQUEST)
