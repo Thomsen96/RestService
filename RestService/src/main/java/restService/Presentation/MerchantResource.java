@@ -28,6 +28,7 @@ public class MerchantResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(DTO.CreateAccount account) {
+        System.out.println("Create merchant");
         try {
             var e = accountService.accountCreationRequest(UUID.randomUUID().toString(), account.accountId, Role.MERCHANT);
             var eventResponse = e.getArgument(0, EventResponse.class);
@@ -54,6 +55,7 @@ public class MerchantResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response pay(DTO.CreatePayment dto) {
+        System.out.println("Create payment with " + dto.toString());
         try {
             EventResponse outcome = paymentService.createPaymentRequest(UUID.randomUUID().toString(), dto);
 

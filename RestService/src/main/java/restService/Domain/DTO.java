@@ -10,6 +10,10 @@ public class DTO {
         public CreateAccount() {
 
         }
+        @Override
+        public String toString() {
+            return "CreateAccount [accountId=" + accountId + "]";
+        }
     }
 
     public static class CreateAccountResponse {
@@ -20,6 +24,10 @@ public class DTO {
         public CreateAccountResponse(String accountId) {
             this.accountId = accountId;
         }
+        @Override
+        public String toString() {
+            return "CreateAccountResponse [accountId=" + accountId + "]";
+        }
     }
 
     public static class CreatePayment {
@@ -27,6 +35,19 @@ public class DTO {
         public String merchant;
         public String amount;
         public String description;
+        public CreatePayment(String token, String merchant, String amount, String description) {
+            this.token = token;
+            this.merchant = merchant;
+            this.amount = amount;
+            this.description = description;
+        }
+        public CreatePayment() {
+        }
+        @Override
+        public String toString() {
+            return "CreatePayment [amount=" + amount + ", description=" + description + ", merchant=" + merchant
+                    + ", token=" + token + "]";
+        }
     }
 
     public static class GetCustomerReport {
@@ -36,6 +57,10 @@ public class DTO {
         }
         public GetCustomerReport() {
 
+        }
+        @Override
+        public String toString() {
+          return "GetCustomerReport [customerId=" + customerId + "]";
         }
     }
 
@@ -48,6 +73,10 @@ public class DTO {
         public GetMerchantReport() {
 
         }
+        @Override
+        public String toString() {
+            return "GetMerchantReport [merchantId=" + merchantId + "]";
+        }
     }
 
     public static class CreateTokens {
@@ -55,6 +84,10 @@ public class DTO {
         public int numberOfTokens;
         public CreateTokens() {
 
+        }
+        @Override
+        public String toString() {
+            return "CreateTokens [customerId=" + customerId + ", numberOfTokens=" + numberOfTokens + "]";
         }
     }
 
