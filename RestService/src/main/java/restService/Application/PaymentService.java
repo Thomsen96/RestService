@@ -8,7 +8,6 @@ import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;
 import restService.Domain.DTO;
-import restService.Domain.PaymentDTO;
 
 import static messaging.GLOBAL_STRINGS.PAYMENT_SERVICE.HANDLE.PAYMENT_REQUESTED;
 import static messaging.GLOBAL_STRINGS.PAYMENT_SERVICE.HANDLE.PAYMENT_STATUS_REQUESTED;

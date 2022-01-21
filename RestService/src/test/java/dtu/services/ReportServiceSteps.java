@@ -36,9 +36,9 @@ public class ReportServiceSteps {
 
 	
 	@Before()
-	public void saveTimeout() { this.default_timeout = serviceHelper.TIMEOUT; }
+	public void saveTimeout() { this.default_timeout = ServiceHelper.TIMEOUT; }
 	@After()
-	public void restoreTimeout() { serviceHelper.TIMEOUT = this.default_timeout; }
+	public void restoreTimeout() { ServiceHelper.TIMEOUT = this.default_timeout; }
 
 	
 	@Given("a merchant")

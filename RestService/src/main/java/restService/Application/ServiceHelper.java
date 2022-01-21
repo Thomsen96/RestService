@@ -10,7 +10,7 @@ public class ServiceHelper {
 	public static int TIMEOUT;
 	
 	public ServiceHelper() {
-		this.TIMEOUT = 5000;
+		ServiceHelper.TIMEOUT = 5000;
 	}
 
 	public void addTimeOut(String sessionId, CompletableFuture<Event> session, String errorMessage) {

@@ -13,11 +13,9 @@ import io.cucumber.java.en.*;
 import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;
-import messaging.implementations.MockMessageQueue;
 import restService.Application.PaymentService;
 import restService.Application.ServiceHelper;
 import restService.Domain.DTO;
-import restService.Domain.PaymentDTO;
 
 public class PaymentServiceSteps {
 
@@ -36,9 +34,9 @@ public class PaymentServiceSteps {
 	
 	int default_timeout;
 	@Before()
-	public void saveTimeout() { this.default_timeout = serviceHelper.TIMEOUT; }
+	public void saveTimeout() { this.default_timeout = ServiceHelper.TIMEOUT; }
 	@After()
-	public void restoreTimeout() { serviceHelper.TIMEOUT = this.default_timeout; }
+	public void restoreTimeout() { ServiceHelper.TIMEOUT = this.default_timeout; }
 
 	
 	@Given("a payment")
@@ -77,7 +75,7 @@ public class PaymentServiceSteps {
 
 	@Given("the Payments ServiceHelpers timeout is {int} ms")
 	public void thePaymentsServiceHelpersTimeoutIsMs(Integer newTimeout) {
-		serviceHelper.TIMEOUT = newTimeout;
+		ServiceHelper.TIMEOUT = newTimeout;
 	}
 
 	@When("no paymentRequestResponse is received")
