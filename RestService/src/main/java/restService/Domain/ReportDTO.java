@@ -74,25 +74,63 @@ public class ReportDTO {
   
 
   public static class MerchantPayment {
-    public String merchantId;
-    public String token;
-    public String amount;
-    public MerchantPayment(String merchantId, String token, String amount) {
-      this.merchantId = merchantId;
-      this.token = token;
-      this.amount = amount;
-    }
-    public MerchantPayment() {
-    }
-    @Override
-    public String toString() {
-      return "MerchantPayment [amount=" + amount + ", merchantId=" + merchantId
-          + ", token=" + token + "]";
-    }
-  }
+		public String merchantId;
+		public String token;
+		public String amount;
+		public MerchantPayment(String merchantId, String token, String amount) {
+			this.merchantId = merchantId;
+			this.token = token;
+			this.amount = amount;
+		}
+		public MerchantPayment() {
+		}
+		@Override
+		public String toString() {
+			return "MerchantPayment [amount=" + amount + ", merchantId=" + merchantId
+					+ ", token=" + token + "]";
+		}
+		public String getMerchantId() {
+			return merchantId;
+		}
+		public void setMerchantId(String merchantId) {
+			this.merchantId = merchantId;
+		}
+		public String getToken() {
+			return token;
+		}
+		public void setToken(String token) {
+			this.token = token;
+		}
+		public String getAmount() {
+			return amount;
+		}
+		public void setAmount(String amount) {
+			this.amount = amount;
+		}
+	}
 
-  public static class Merchant {
-    ArrayList<MerchantPayment> payments;
-  }
+	public static class Merchant {
+		ArrayList<MerchantPayment> payments;
+
+		public Merchant(ArrayList<MerchantPayment> payments) {
+			this.payments = payments;
+		}
+
+		public Merchant() {
+		}
+
+		public ArrayList<MerchantPayment> getPayments() {
+			return payments;
+		}
+
+		public void setPayments(ArrayList<MerchantPayment> payments) {
+			this.payments = payments;
+		}
+
+		@Override
+		public String toString() {
+			return "Merchant [payments=" + payments + "]";
+		}
+	}
   
 }

@@ -5,7 +5,7 @@ import restService.Application.AccountService.Role;
 import restService.Application.PaymentService;
 import restService.Application.ReportService;
 import restService.Domain.DTO;
-import restService.Domain.PaymentMerchant;
+import restService.Domain.ReportDTO;
 import restService.Infrastructure.MessageQueueFactory;
 import java.util.UUID;
 
@@ -78,8 +78,9 @@ public class MerchantResource {
     		EventResponse outcome = reportService.getReport(UUID.randomUUID().toString(), merchantId, ReportService.Role.MERCHANT);
     		
             if (outcome.isSuccess()) {
-            	PaymentMerchant[] payments = outcome.getArgument(0, PaymentMerchant[].class);
-                return Response.status(Response.Status.OK).entity(payments).build();
+            	ReportDTO.Merchant report = outcome.getArgument(0, ReportDTO.Merchant.class);
+				System.out.println("IAM HERE: " + report);
+				return Response.status(Response.Status.OK).entity(report).build();
             } else {
                 return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
             }
