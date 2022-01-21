@@ -75,6 +75,7 @@ public class CustomerResource {
 
 	@GET
 	@Path("/reports/{customerId}")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getReport(@PathParam("customerId") String customerId) {
 			System.out.println("Generating reports for customer " + customerId);
     	try {
@@ -82,7 +83,8 @@ public class CustomerResource {
     		
             if (outcome.isSuccess()) {
             	ReportDTO.Customer report = outcome.getArgument(0, ReportDTO.Customer.class);
-                return Response.status(Response.Status.OK).entity(report).build();
+							System.out.println("IAM HERE: " + report);
+							return Response.status(Response.Status.OK).entity(report).build();
             } else {
                 return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
             }

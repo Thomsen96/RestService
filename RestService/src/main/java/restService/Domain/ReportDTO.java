@@ -22,10 +22,34 @@ public class ReportDTO {
       return "CustomerPayment [amount=" + amount + ", customerId=" + customerId + ", merchantId=" + merchantId
           + ", token=" + token + "]";
     }
+    public String getCustomerId() {
+      return customerId;
+    }
+    public void setCustomerId(String customerId) {
+      this.customerId = customerId;
+    }
+    public String getMerchantId() {
+      return merchantId;
+    }
+    public void setMerchantId(String merchantId) {
+      this.merchantId = merchantId;
+    }
+    public String getToken() {
+      return token;
+    }
+    public void setToken(String token) {
+      this.token = token;
+    }
+    public String getAmount() {
+      return amount;
+    }
+    public void setAmount(String amount) {
+      this.amount = amount;
+    }
   }
 
   public static class Customer {
-    ArrayList<CustomerPayment> payments;
+    public ArrayList<CustomerPayment> payments;
 
     public Customer(ArrayList<CustomerPayment> payments) {
       this.payments = payments;
@@ -37,6 +61,14 @@ public class ReportDTO {
     @Override
     public String toString() {
       return "Customer [payments=" + payments + "]";
+    }
+
+    public ArrayList<CustomerPayment> getPayments() {
+      return payments;
+    }
+
+    public void setPayments(ArrayList<CustomerPayment> payments) {
+      this.payments = payments;
     }
   }
   
