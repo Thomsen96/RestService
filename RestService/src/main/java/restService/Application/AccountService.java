@@ -74,7 +74,7 @@ public class AccountService {
 
 		sessions.put(sessionId, new CompletableFuture<Event>());
 		
-		EventResponse eventArgs = new EventResponse(sessionId, true, null, new DTO.CreateAccount(accountNumber));
+		EventResponse eventArgs = new EventResponse(sessionId, true, null, accountNumber);
 		Event event = new Event(role.CREATION_REQUEST, eventArgs);
 
 		messageQueue.addHandler(role.CREATION_RESPONSE  + sessionId, this::accountCreationResponseHandler);
