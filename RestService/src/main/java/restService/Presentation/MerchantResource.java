@@ -5,7 +5,6 @@ import restService.Application.AccountService.Role;
 import restService.Application.PaymentService;
 import restService.Application.ReportService;
 import restService.Domain.DTO;
-import restService.Domain.PaymentDTO;
 import restService.Domain.PaymentMerchant;
 import restService.Infrastructure.MessageQueueFactory;
 import java.util.UUID;

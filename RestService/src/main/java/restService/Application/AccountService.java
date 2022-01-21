@@ -3,7 +3,6 @@ package restService.Application;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import restService.Domain.DTO;
 import messaging.Event;
 import messaging.EventResponse;
 import messaging.MessageQueue;

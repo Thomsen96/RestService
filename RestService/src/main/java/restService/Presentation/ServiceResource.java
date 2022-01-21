@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MediaType;
+
 @Path("/services")
 public class ServiceResource {
 

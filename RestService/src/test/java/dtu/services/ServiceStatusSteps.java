@@ -40,19 +40,19 @@ public class ServiceStatusSteps {
   int default_timeout;
 	@Before()
 	public void saveTimeout() {
-		this.default_timeout = serviceHelper.TIMEOUT;
+		this.default_timeout = ServiceHelper.TIMEOUT;
 	}
 	
 	@After()
 	public void restoreTimeout() {
-		serviceHelper.TIMEOUT = this.default_timeout;
+		ServiceHelper.TIMEOUT = this.default_timeout;
 	}
 
 	
 	
 	@Given("the ServiceHelper timeout is {int} ms")
 	public void theTimeoutIsMs(Integer newTimeout) {
-	    serviceHelper.TIMEOUT = newTimeout;
+	    ServiceHelper.TIMEOUT = newTimeout;
 	}
 	
   
