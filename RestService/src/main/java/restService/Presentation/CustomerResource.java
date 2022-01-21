@@ -81,8 +81,8 @@ public class CustomerResource {
     		EventResponse outcome = reportService.getReport(UUID.randomUUID().toString(), customerId, ReportService.Role.CUSTOMER);
     		
             if (outcome.isSuccess()) {
-            	Payment[] payments = outcome.getArgument(0, Payment[].class);
-                return Response.status(Response.Status.OK).entity(payments).build();
+            	ReportDTO.Customer report = outcome.getArgument(0, ReportDTO.Customer.class);
+                return Response.status(Response.Status.OK).entity(report).build();
             } else {
                 return Response.status(Response.Status.BAD_REQUEST).entity(outcome.getErrorMessage()).build();
             }
