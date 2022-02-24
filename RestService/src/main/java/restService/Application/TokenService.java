@@ -57,8 +57,10 @@ public class TokenService {
 		Event event = new Event(TOKEN_CREATION_REQUEST, eventArgs);
 		messageQueue.addHandler(TOKEN_CREATION_RESPONSE  + sessionId, this::handleResponse);
         messageQueue.publish(event);
+        serviceHelper.addTimeOut(sessionId, sessions.get(sessionId), "No reply from a Token service");
 
         // TODO: Add timeout handling
+        
 
         return sessions.get(sessionId).join();
     }
